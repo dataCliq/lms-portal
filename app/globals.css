@@ -84,3 +84,20 @@ html, body, :root{
     @apply bg-background text-foreground;
   }
 }
+<<<<<<< HEAD
+=======
+
+/* Optionally, add this in your global CSS if you're not using the config file approach */
+
+/* Neomorphic Shadow */
+.shadow-neomorphic {
+  border: 1px solid lightgrey; /* Light grey border */
+  box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.15), -8px -8px 15px rgba(255, 255, 255, 0.7); /* Base shadow */
+}
+
+/* Hover Effect */
+.card:hover {
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1), -4px -4px 10px rgba(255, 255, 255, 0.6); /* Minimal light grey shadow */
+  transform: scale(1.05); /* Slight scaling effect */
+}
+>>>>>>> 8a34fa2 (Updated 11Jan)

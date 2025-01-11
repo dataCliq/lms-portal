@@ -1,5 +1,6 @@
 'use client';
 
+<<<<<<< HEAD
 const HomePage = () => {
     return (
         <div className="flex flex-col items-center justify-center h-full bg-cover bg-center text-white">
@@ -103,6 +104,28 @@ const HomePage = () => {
                     </button>
                 </div>
             </div>
+=======
+import HeroSection from './HeroSection';
+import CardSection from './CardSection';
+
+const HomePage = () => {
+    return (
+        <div className="flex flex-col items-center justify-start min-h-screen bg-cover bg-center">
+            {/* Hero Section */}
+            <div className="w-full border border-red-500">
+    <HeroSection />
+</div>
+
+
+            {/* Add Controlled Gap */}
+            <div className="w-full py-10" /> {/* Adjust padding-y to manage spacing */}
+
+            {/* Card Section */}
+            <div className="w-full border border-blue-500">
+    <CardSection />
+</div>
+
+>>>>>>> 8a34fa2 (Updated 11Jan)
         </div>
     );
 };
