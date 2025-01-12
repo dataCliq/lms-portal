@@ -1,6 +1,8 @@
 'use client';
 
 import HomePage from './(routes)/home/page'; // Assuming HomePage is located in (routes)/home/page.tsx
+import Page from './(routes)/sign-in/[[...sign-in]]/page';
+import Card from './_components/course-card';
 import Navbar from './_components/navbar';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

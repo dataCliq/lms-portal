@@ -84,8 +84,6 @@ html, body, :root{
     @apply bg-background text-foreground;
   }
 }
-<<<<<<< HEAD
-=======
 
 /* Optionally, add this in your global CSS if you're not using the config file approach */
 
@@ -100,4 +98,3 @@ html, body, :root{
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1), -4px -4px 10px rgba(255, 255, 255, 0.6); /* Minimal light grey shadow */
   transform: scale(1.05); /* Slight scaling effect */
 }
->>>>>>> 8a34fa2 (Updated 11Jan)
