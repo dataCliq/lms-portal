@@ -5,15 +5,18 @@ import { Course } from "../../lib/model/course";
 export default async function handler(req, res) {
     if (req.method === 'GET') {
         try {
-            // Connect to MongoDB
-            await mongoose.connect(connectionSrt, { useNewUrlParser: true, useUnifiedTopology: true });
-            const data = await Course.find(); // Query data
-            console.log(data);
+            console.log("Connecting to MongoDB...");
+            await mongoose.connect(connectionSrt, {
+                serverSelectionTimeoutMS: 5000, // Fail quickly if connection fails
+            });
+            console.log("Connected to MongoDB.");
 
-            // Return JSON response
+            const data = await Course.find();
+            console.log("Data fetched:", data);
+
             res.status(200).json({ success: true, data });
         } catch (error) {
-            console.error("Error fetching data:", error.message);
+            console.error("Error connecting to MongoDB:", error.message);
             res.status(500).json({ success: false, message: "Internal server error." });
         }
     } else {

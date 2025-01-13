@@ -8,7 +8,7 @@ const HomePage = () => {
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-cover bg-center">
       {/* Hero Section */}
-      <div className="w-full border border-red-500">
+      <div className="w-full">
         <HeroSection />
       </div>
 
@@ -16,17 +16,19 @@ const HomePage = () => {
       <div className="w-full py-10" /> 
 
       {/* Card Section */}
-      <div className="w-full border border-blue-500">
+      <div className="w-full ">
         <CardSection />
       </div>
 
       {/* Add Another Controlled Gap */}
-      <div className="w-full py-10" />
+      <div className="w-full py-8" />
 
       {/* Course Cards Section */}
       <div className="w-full px-4">
         <CourseCard /> 
       </div>
+
+      <div className="w-full py-20" />
     </div>
   );
 };
