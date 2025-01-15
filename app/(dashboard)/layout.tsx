@@ -1,23 +1,25 @@
 'use client';
 
-import HomePage from './(routes)/home/page'; // Assuming HomePage is located in (routes)/home/page.tsx
-import Page from './(routes)/sign-in/[[...sign-in]]/page';
-import Navbar from './_components/navbar';
+import Navbar from './_components/navbar'; // Ensure Navbar exists in this location
+import { usePathname } from 'next/navigation'; // Import usePathname hook from Next.js
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname(); // Get the current path
+
+  // Ensure HomePage renders only when at '/' or '/home'
   return (
-    <>
-      <div
-        className="flex flex-col items-center justify-center w-full h-full bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: "url('/background.svg')", // Update with the correct path to your background image
-        }}
-      >
-        {/* Navbar and HomePage are part of the dashboard layout */}
-        <Navbar />
-        <HomePage /> {/* This should be part of the dashboard layout */}
-        {children} {/* Render dashboard-specific content */}
-      </div>
-    </>
+    <div
+      className="flex flex-col items-center justify-center w-full h-full bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage: "url('/background.svg')", // Ensure this path points to your actual background image
+      }}
+    >
+      <Navbar />
+      {/* Render HomePage only on the root (/) or /home routes */}
+      {(pathname === '/' || pathname === '/home') && children}
+
+      {/* Render dynamic children (e.g., course pages) */}
+      {(pathname !== '/' && pathname !== '/home') && children}
+    </div>
   );
 }

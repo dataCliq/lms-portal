@@ -2,7 +2,7 @@
 
 import HeroSection from './HeroSection';
 import CardSection from './CardSection';
-import CourseCard from '../course/page'; // Assuming this is the course cards page
+import CourseCard from '../../_components/CourseCard';
 
 const HomePage = () => {
   return (
@@ -23,9 +23,10 @@ const HomePage = () => {
       {/* Add Another Controlled Gap */}
       <div className="w-full py-8" />
 
-      {/* Course Cards Section */}
-      <div className="w-full px-4">
-        <CourseCard /> 
+      {/* Dynamic Course Cards */}
+      <div className="mt-10">
+        <h2 className="text-2xl font-bold text-center mb-6">Our Courses</h2>
+        <CourseCard /> {/* Fetches courses from the database */}
       </div>
 
       <div className="w-full py-20" />
@@ -34,3 +35,4 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
