@@ -6,11 +6,11 @@ import Prism from 'prismjs'; // Import Prism.js
 import 'prismjs/themes/prism.css'; // Import Prism.js default CSS theme
 import 'prismjs/components/prism-javascript'; // Import specific language syntax
 import 'prismjs/components/prism-css'; // Import more languages if needed
-import 'prismjs/components/prism-markup'; 
+import 'prismjs/components/prism-markup';
 
 const CoursePage = () => {
-    const pathname = usePathname(); 
-    const courseId = pathname ? pathname.split('/').pop() : null; 
+    const pathname = usePathname();
+    const courseId = pathname ? pathname.split('/').pop() : null;
 
     const [courseData, setCourseData] = useState<any | null>(null);
     const [selectedLesson, setSelectedLesson] = useState<string | null>(null);
@@ -21,7 +21,7 @@ const CoursePage = () => {
     type ContentBlock = {
         type: 'text' | 'code';
         value: string;
-        language?: string; 
+        language?: string;
     };
 
     // Highlight code after rendering
@@ -118,25 +118,17 @@ const CoursePage = () => {
                             <p className="mb-2">
                                 <strong>Time Estimate:</strong> {lessonContent.timeEstimate}
                             </p>
-                            <div>
-                                {lessonContent.content?.map((block: ContentBlock, index: number) => (
-                                    block.type === 'text' ? (
-                                        <p key={index} className="mb-4">{block.value}</p>
-                                    ) : (
-                                        <pre key={index} className="bg-gray-100 p-4 rounded mb-4 overflow-x-auto">
-                                            <code className={`language-${block.language || 'plaintext'}`}>
-                                                {block.value}
-                                            </code>
-                                        </pre>
-                                    )
-                                ))}
-                            </div>
+                            <div
+                                className="lesson-content"
+                                dangerouslySetInnerHTML={{ __html: lessonContent.content }}
+                            ></div>
                         </div>
                     ) : (
                         <p>No content available for this lesson.</p>
                     )}
                 </div>
             </div>
+
         </div>
     );
 };
