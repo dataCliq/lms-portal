@@ -98,3 +98,12 @@ html, body, :root{
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1), -4px -4px 10px rgba(255, 255, 255, 0.6); /* Minimal light grey shadow */
   transform: scale(1.05); /* Slight scaling effect */
 }
+
+h1{
+  font-size: 25px;
+  padding-bottom: 15px;
+}
+h2{
+  font-size: 19px;
+}
+

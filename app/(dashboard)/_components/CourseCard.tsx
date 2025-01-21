@@ -105,13 +105,21 @@ const CourseCard: React.FC = () => {
                                     </svg>
                                     {course.lessonsCount} Lessons
                                 </div>
-                                <Link href={`/course/${encodeURIComponent(course.courseId)}`}>
+                                {/* <Link href={`/course/${encodeURIComponent(course.courseId)}`}>
                                     <button
                                         className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded hover:bg-blue-600"
                                     >
                                         Start Now
                                     </button>
-                                </Link>
+                                </Link> */}
+                                <Link href={`/course/weeks`}>
+    <button
+        className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded hover:bg-blue-600"
+    >
+        Start Now
+    </button>
+</Link>
+
                             </div>
                         </div>
                     </div>
