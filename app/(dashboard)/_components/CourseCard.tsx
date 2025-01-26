@@ -4,12 +4,18 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 interface Course {
-    _id: string;
-    title: string;
-    imageSrc: string;
-    courseId: string;
-    rating: Float32Array;
-    lessonsCount: number;
+    _id: string,
+    title: string,
+    rating: Float32Array,
+    weekCount: Float32Array,
+    courseId: string,
+    slug: string,
+    imageSrc: string,
+    description: string,
+    tags: [string],
+    price: Float32Array,
+    createdAt: Date,
+    updatedAt: Date,
 }
 
 const CourseCard: React.FC = () => {
@@ -103,7 +109,7 @@ const CourseCard: React.FC = () => {
                                             d="M16.5 3.75H7.5m9 0a2.25 2.25 0 012.25 2.25v12a2.25 2.25 0 01-2.25 2.25m-9-16.5A2.25 2.25 0 005.25 6v12a2.25 2.25 0 002.25 2.25m9 0h-9"
                                         />
                                     </svg>
-                                    {course.lessonsCount} Lessons
+                                    {course.weekCount} Lessons
                                 </div>
                                 {/* <Link href={`/course/${encodeURIComponent(course.courseId)}`}>
                                     <button
@@ -112,13 +118,13 @@ const CourseCard: React.FC = () => {
                                         Start Now
                                     </button>
                                 </Link> */}
-                                <Link href={`/course/weeks`}>
-    <button
-        className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded hover:bg-blue-600"
-    >
-        Start Now
-    </button>
-</Link>
+
+                                <Link href={`/course/weeks?courseId=${course.courseId}`}>
+                                    <button className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded hover:bg-blue-600">
+                                        Start Now
+                                    </button>
+                                </Link>
+
 
                             </div>
                         </div>

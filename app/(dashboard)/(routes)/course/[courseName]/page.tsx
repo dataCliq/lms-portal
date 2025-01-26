@@ -95,15 +95,19 @@ const CoursePage = () => {
                 <ul className="space-y-2">
                     {courseData.lessonId.map((lesson: string) => (
                         <li key={lesson}>
+                            
                             <button
-                                className={`w-full text-left px-4 py-2 rounded ${selectedLesson === lesson
-                                    ? 'bg-white text-black'
-                                    : 'hover:bg-gray-700'
-                                    }`}
-                                onClick={() => setSelectedLesson(lesson)}
-                            >
-                                {lesson}
-                            </button>
+    className={`w-full text-left px-4 py-2 rounded transition-colors duration-200 
+        ${selectedLesson === lesson 
+            ? 'bg-white text-black' // Selected state
+            : 'bg-transparent text-gray-300 hover:bg-gray-700 hover:text-white' // Unselected state
+        } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+    aria-pressed={selectedLesson === lesson} // Accessibility
+    onClick={() => setSelectedLesson(lesson)}
+>
+    {lesson}
+</button>
+
                         </li>
                     ))}
                 </ul>

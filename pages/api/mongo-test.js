@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { connectionSrt } from "../../lib/db";
-import { Course } from "../../lib/model/course";
+import { Courses } from "../../lib/model/course";
 
 export default async function handler(req, res) {
     if (req.method === 'GET') {
@@ -11,7 +11,7 @@ export default async function handler(req, res) {
             });
             console.log("Connected to MongoDB.");
 
-            const data = await Course.find();
+            const data = await Courses.find();
             console.log("Data fetched:", data);
 
             res.status(200).json({ success: true, data });
