@@ -3,6 +3,7 @@ import { connectionSrt } from "../../lib/db";
 import { Week } from "../../lib/model/week";
 import { NextApiRequest, NextApiResponse } from "next";
 
+
 export default async function handler(req:NextApiRequest, res:NextApiResponse) {
     if (req.method === "GET") {
         try {
@@ -10,6 +11,7 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
             await mongoose.connect(connectionSrt, {
                 serverSelectionTimeoutMS: 5000, // Fail quickly if connection fails
             });
+            
             console.log("Connected to Week MongoDB.");
 
             const data = await Week.find(); // Fetch data from the courseNavigation collection

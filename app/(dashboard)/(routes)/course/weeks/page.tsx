@@ -1,53 +1,63 @@
-'use client';
+"use client"
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
+import Link from "next/link"
 
 export default function WeekList() {
-  interface Week {
-    _id: string;
-    weekId: number;
-    courseId: string;
-    lessonCount: number;
-    slug: string;
-    lessonList: string[];
+  interface Lesson {
+    title: string
+    id: string
   }
 
-  const [weeks, setWeeks] = useState<Week[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [selectedCourse, setSelectedCourse] = useState("sql"); // Default selected course
+  interface Week {
+    _id: string
+    weekId: number
+    courseId: string
+    lessonCount: number
+    slug: string
+    lessonList: Lesson[]
+    createdAt: string
+    updatedAt: string
+  }
+
+  const [weeks, setWeeks] = useState<Week[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+  const [selectedCourse, setSelectedCourse] = useState("sql")
 
   useEffect(() => {
     const fetchWeeks = async () => {
       try {
-        const response = await fetch("/api/course-week");
-        const result = await response.json();
+        const response = await fetch("/api/course-week")
+        const result = await response.json()
         if (result.success) {
-          setWeeks(result.data);
+          console.log("Fetched weeks data:", result.data)
+          setWeeks(result.data)
         } else {
-          setError("Failed to fetch data");
+          setError("Failed to fetch data")
         }
       } catch (err) {
-        setError("Error fetching data");
+        setError("Error fetching data")
+        console.error("Fetch error:", err)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchWeeks();
-  }, []);
+    fetchWeeks()
+  }, [])
 
-  if (loading) return <p className="text-center text-lg text-blue-500">Loading...</p>;
-  if (error) return <p className="text-center text-lg text-red-500">Error: {error}</p>;
+  if (loading) return <p className="text-center text-lg text-blue-500">Loading...</p>
+  if (error) return <p className="text-center text-lg text-red-500">Error: {error}</p>
 
-  // Filter weeks based on the selected courseId
-  const filteredWeeks = weeks.filter((week) => week.courseId === selectedCourse);
+  const filteredWeeks = weeks.filter((week) => week.courseId === selectedCourse)
 
   return (
     <div className="p-6 max-w-screen-xl mx-auto">
-      <h2 className="text-3xl font-semibold text-center mb-6 text-blue-600">Weeks for Course: {selectedCourse.toUpperCase()}</h2>
+      <h2 className="text-3xl font-semibold text-center mb-6 text-blue-600">
+        Weeks for Course: {selectedCourse.toUpperCase()}
+      </h2>
 
-      {/* Course Selector */}
       <div className="mb-6 flex justify-center space-x-4">
         <button
           onClick={() => setSelectedCourse("sql")}
@@ -67,7 +77,6 @@ export default function WeekList() {
         </button>
       </div>
 
-      {/* Week Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredWeeks.map((week) => (
           <div
@@ -80,15 +89,32 @@ export default function WeekList() {
             <div className="my-4">
               <h4 className="font-medium text-gray-700">Lessons:</h4>
               <ul className="list-disc pl-5 text-gray-600">
-                {week.lessonList.map((lesson, index) => (
-                  <li key={index}>{lesson}</li>
-                ))}
+                {week.lessonList && week.lessonList.length > 0 ? (
+                  week.lessonList.map((lesson, index) => (
+                    <li key={index} className="mb-2">
+                      {lesson.title}
+                    </li>
+                  ))
+                ) : (
+                  <li className="mb-2">No lessons available</li>
+                )}
               </ul>
             </div>
             <div className="flex justify-between items-center mt-6">
-              <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
-                Get Started
-              </button>
+            <Link href={`/course/weeks/${selectedCourse}/?slug=${week.slug}`}>
+  <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
+    Get Started
+  </button>
+</Link>
+
+
+
+              {/* <Link href={`/course/${selectedCourse}/${week.slug}`}>
+                <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
+                  Get Started
+                </button>
+              </Link> */}
+
               <div className="relative w-14 h-14">
                 <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 36 36">
                   <path
@@ -97,8 +123,8 @@ export default function WeekList() {
                     stroke="currentColor"
                     fill="none"
                     d="M18 2.0845
-                      a 15.9155 15.9155 0 0 1 0 31.831
-                      a 15.9155 15.9155 0 0 1 0 -31.831"
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
                   ></path>
                   <path
                     className="text-blue-500"
@@ -108,7 +134,7 @@ export default function WeekList() {
                     stroke="currentColor"
                     fill="none"
                     d="M18 2.0845
-                      a 15.9155 15.9155 0 0 1 0 31.831"
+                    a 15.9155 15.9155 0 0 1 0 31.831"
                   ></path>
                 </svg>
                 <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-sm font-bold text-white">
@@ -120,5 +146,6 @@ export default function WeekList() {
         ))}
       </div>
     </div>
-  );
+  )
 }
+

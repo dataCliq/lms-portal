@@ -1,95 +1,46 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from "next/navigation";
 
-interface LessonDetails {
-  lessonId: string;
-  name: string;
-  content: string;
-  videoUrl: string | null;
-  attachments: string | null;
-}
+const WeekDetail = () => {
+    const router = useRouter();
 
-export default function WeekDetailsPage() {
-  const router = useRouter();
-  const { weekId } = router.query; // Extract weekId from the route
-
-  const [weekDetails, setWeekDetails] = useState<LessonDetails[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (!weekId) return; // Wait for weekId to be available
-
-    const fetchWeekDetails = async () => {
-      try {
-        const response = await fetch(`/api/lesson-content?weekId=${weekId}`);
-        const result = await response.json();
-
-        if (result.success) {
-          setWeekDetails(result.data);
-        } else {
-          setError('Failed to fetch week details.');
-        }
-      } catch (err) {
-        setError('Error fetching week details.');
-      } finally {
-        setLoading(false);
-      }
+    const navigateTo = (path: string) => {
+        router.push(path);
     };
 
-    fetchWeekDetails();
-  }, [weekId]);
-
-  if (loading) return <p className="text-center text-lg text-blue-500">Loading...</p>;
-  if (error) return <p className="text-center text-lg text-red-500">Error: {error}</p>;
-
-  if (!weekDetails || weekDetails.length === 0) {
-    return <p className="text-center text-lg text-gray-500">No lessons available for this week.</p>;
-  }
-
-  return (
-    <div className="p-6 max-w-screen-xl mx-auto">
-      <h2 className="text-3xl font-semibold text-center mb-6 text-blue-600">Week {weekId}</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {weekDetails.map((lesson) => (
-          <div
-            key={lesson.lessonId}
-            className="bg-white rounded-xl shadow-lg hover:shadow-2xl p-6 transition duration-300 transform hover:scale-105"
-          >
-            <h3 className="text-2xl font-bold text-gray-800">{lesson.name}</h3>
-            <div
-              className="text-gray-600 my-4"
-              dangerouslySetInnerHTML={{ __html: lesson.content }}
-            />
-            {lesson.videoUrl && (
-              <div className="my-4">
-                <a
-                  href={lesson.videoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 underline"
+    return (
+        <div className="flex h-screen">
+            {/* Navigation Menu */}
+            <div className="w-1/5 bg-gray-800 text-white p-4 flex flex-col gap-4">
+                <h1 className="text-xl font-bold mb-6">Navigation</h1>
+                <button
+                    onClick={() => navigateTo("/home")}
+                    className="bg-gray-700 hover:bg-gray-600 rounded-md px-4 py-2 text-left"
                 >
-                  Watch Video
-                </a>
-              </div>
-            )}
-            {lesson.attachments && (
-              <div className="my-4">
-                <a
-                  href={lesson.attachments}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 underline"
+                    Home
+                </button>
+                <button
+                    onClick={() => navigateTo("/weeks")}
+                    className="bg-gray-700 hover:bg-gray-600 rounded-md px-4 py-2 text-left"
                 >
-                  Download Attachments
-                </a>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+                    Weeks
+                </button>
+                <button
+                    onClick={() => navigateTo("/about")}
+                    className="bg-gray-700 hover:bg-gray-600 rounded-md px-4 py-2 text-left"
+                >
+                    About
+                </button>
+            </div>
+
+            {/* Main Content */}
+            <div className="flex-1 p-6">
+                <h2 className="text-2xl font-semibold mb-4">Week Details</h2>
+                <p>Content for the selected week will go here.</p>
+            </div>
+        </div>
+    );
+};
+
+export default WeekDetail;
