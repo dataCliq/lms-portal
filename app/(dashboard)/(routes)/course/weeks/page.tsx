@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 
 export default function WeekList() {
   interface Lesson {
@@ -23,7 +24,8 @@ export default function WeekList() {
   const [weeks, setWeeks] = useState<Week[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
-  const [selectedCourse, setSelectedCourse] = useState("sql")
+  const searchParams = useSearchParams()
+  const courseId = searchParams?.get("courseId") || "sql" // Default to "sql" if not provided
 
   useEffect(() => {
     const fetchWeeks = async () => {
@@ -50,32 +52,13 @@ export default function WeekList() {
   if (loading) return <p className="text-center text-lg text-blue-500">Loading...</p>
   if (error) return <p className="text-center text-lg text-red-500">Error: {error}</p>
 
-  const filteredWeeks = weeks.filter((week) => week.courseId === selectedCourse)
+  const filteredWeeks = weeks.filter((week) => week.courseId === courseId)
 
   return (
     <div className="p-6 max-w-screen-xl mx-auto">
       <h2 className="text-3xl font-semibold text-center mb-6 text-blue-600">
-        Weeks for Course: {selectedCourse.toUpperCase()}
+        Weeks for Course: {courseId.toUpperCase()}
       </h2>
-
-      <div className="mb-6 flex justify-center space-x-4">
-        <button
-          onClick={() => setSelectedCourse("sql")}
-          className={`px-6 py-3 rounded-lg text-lg font-semibold transition duration-200 ${
-            selectedCourse === "sql" ? "bg-blue-600 text-white shadow-lg" : "bg-gray-200 text-blue-600"
-          } hover:bg-blue-500`}
-        >
-          SQL
-        </button>
-        <button
-          onClick={() => setSelectedCourse("power-bi")}
-          className={`px-6 py-3 rounded-lg text-lg font-semibold transition duration-200 ${
-            selectedCourse === "power-bi" ? "bg-blue-600 text-white shadow-lg" : "bg-gray-200 text-blue-600"
-          } hover:bg-blue-500`}
-        >
-          Power BI
-        </button>
-      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredWeeks.map((week) => (
@@ -101,19 +84,11 @@ export default function WeekList() {
               </ul>
             </div>
             <div className="flex justify-between items-center mt-6">
-            <Link href={`/course/weeks/${selectedCourse}/?slug=${week.slug}`}>
-  <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
-    Get Started
-  </button>
-</Link>
-
-
-
-              {/* <Link href={`/course/${selectedCourse}/${week.slug}`}>
+              <Link href={`/course/weeks/${week.weekId}?courseId=${courseId}&slug=${week.slug}`}>
                 <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
-                  Get Started
+                  Start Now
                 </button>
-              </Link> */}
+              </Link>
 
               <div className="relative w-14 h-14">
                 <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 36 36">

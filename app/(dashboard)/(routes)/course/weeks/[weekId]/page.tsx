@@ -1,99 +1,161 @@
-"use client";
+"use client"
 
-import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
+import { useState, useEffect } from "react"
+
+interface Lesson {
+  title: string
+  id: string
+}
+
+interface Week {
+  _id: string
+  weekId: number
+  courseId: string
+  lessonCount: number
+  slug: string
+  lessonList: Lesson[]
+  createdAt: string
+  updatedAt: string
+}
+
+interface LessonContent {
+  _id: string
+  weekId: number
+  courseId: string
+  lessonId: string
+  slug: string
+  name: string
+  content: string
+  videoUrl: string | null
+  attachments: string | null
+  createdAt: string
+  updatedAt: string
+}
 
 const WeekDetail = () => {
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const slug = searchParams.get("slug"); // Get the slug from query parameters
-    const [lessons, setLessons] = useState([]); // Store lesson list
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+  const [week, setWeek] = useState<Week | null>(null)
+  const [currentLesson, setCurrentLesson] = useState<LessonContent | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+  const router = useRouter()
+  const params = useParams()
+  const searchParams = useSearchParams()
+  const slug = searchParams?.get("slug") || ""
+  const courseId = searchParams?.get("courseId") || ""
+  const weekId = params?.weekId as string
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (!slug) {
-                setError("No slug provided in the URL.");
-                setLoading(false);
-                return;
-            }
+  useEffect(() => {
+    const fetchWeekData = async () => {
+      if (!slug || !courseId || !weekId) {
+        setError("Missing slug, courseId, or weekId")
+        setLoading(false)
+        return
+      }
 
-            try {
-                const response = await fetch(`/api/course-week?slug=${slug}`);
-                const result = await response.json();
+      try {
+        console.log("Fetching data for:", { courseId, slug, weekId })
+        const response = await fetch(`/api/course-week?courseId=${courseId}&slug=${slug}&weekId=${weekId}`)
+        const result = await response.json()
+        console.log("API response:", result)
+        if (result.success && result.data) {
+          setWeek(result.data)
+          console.log("Week data set:", result.data)
+        } else {
+          setError("Failed to fetch week data")
+        }
+      } catch (err) {
+        setError("Error fetching week data")
+        console.error("Fetch error:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-                console.log("API Response:", result); // Debugging API response
+    fetchWeekData()
+  }, [courseId, slug, weekId])
 
-                if (result.success) {
-                    const weekData = result.data[0]; // Assuming the API returns an array
-                    if (weekData && weekData.lessonList) {
-                        setLessons(weekData.lessonList); // Set the lessonList correctly
-                        console.log("Lessons:", weekData.lessonList); // Debugging lessons data
-                    } else {
-                        console.warn("No lessonList found in week data");
-                        setLessons([]);
-                    }
-                } else {
-                    setError("Failed to fetch week data");
-                }
-            } catch (err) {
-                console.error("Error fetching week data:", err);
-                setError("An error occurred while fetching the data.");
-            } finally {
-                setLoading(false);
-            }
-        };
+  const fetchLessonContent = async (lessonId: string) => {
+    try {
+      console.log("Fetching lesson content for:", { courseId, weekId, lessonId })
+      const response = await fetch(`/api/course-content?courseId=${courseId}&weekId=${weekId}&lessonId=${lessonId}`)
+      const result = await response.json()
+      console.log("Lesson content API response:", result)
+      if (result.success && result.data) {
+        setCurrentLesson(result.data)
+        console.log("Current lesson set:", result.data)
+      } else {
+        setError("Failed to fetch lesson content")
+      }
+    } catch (err) {
+      setError("Error fetching lesson content")
+      console.error("Fetch error:", err)
+    }
+  }
 
-        fetchData();
-    }, [slug]);
+  console.log("Current week state:", week)
+  console.log("Current lesson state:", currentLesson)
 
-    const navigateTo = (path: string) => {
-        router.push(path);
-    };
+  if (loading) return <p className="text-center text-lg text-blue-500">Loading...</p>
+  if (error) return <p className="text-center text-lg text-red-500">Error: {error}</p>
+  if (!week) return <p className="text-center text-lg text-red-500">No data found for this week</p>
 
-    return (
-        <div className="flex h-screen">
-            {/* Navigation Menu */}
-            <div className="w-1/5 bg-gray-900 text-white p-4 flex flex-col gap-6 fixed h-screen">
-                <h1 className="text-xl font-bold mb-8 text-center border-b pb-2 border-gray-700">
-                    Lessons
-                </h1>
-                {loading ? (
-                    <p className="text-gray-400 text-center">Loading lessons...</p>
-                ) : error ? (
-                    <p className="text-red-500 text-center">{error}</p>
-                ) : lessons.length > 0 ? (
-                    lessons.map((lesson) => (
-                        <button
-                            key={lesson.id}
-                            onClick={() => navigateTo(`/lesson/${lesson.id}`)}
-                            className="bg-gray-800 hover:bg-gray-700 rounded-md px-4 py-3 text-left transition"
-                        >
-                            {lesson.title || "Untitled"} {/* Safeguard if title is missing */}
-                        </button>
-                    ))
-                ) : (
-                    <p className="text-gray-400 text-center">No lessons available</p>
-                )}
-            </div>
-
-            {/* Main Content */}
-            <div className="ml-1/5 flex-1 p-8 bg-gray-100">
-                <h2 className="text-3xl font-semibold mb-6 text-gray-800">
-                    Week Details
-                </h2>
-                <p className="text-lg text-gray-600">
-                    {loading
-                        ? "Loading week details..."
-                        : lessons.length > 0
-                        ? "Select a lesson from the navigation menu to view its details."
-                        : "No lessons available for this week."}
-                </p>
-            </div>
+  return (
+    <div className="flex h-screen bg-gray-100">
+      {/* Navigation Menu */}
+      <nav className="w-64 bg-white shadow-md h-full overflow-y-auto">
+        <div className="p-4 bg-blue-600 text-white">
+          <h2 className="text-xl font-bold">Week {week.weekId} Lessons</h2>
         </div>
-    );
-};
+        <ul className="space-y-2 p-4">
+          {week.lessonList && week.lessonList.length > 0 ? (
+            week.lessonList.map((lesson) => (
+              <li key={lesson.id}>
+                <button
+                  onClick={() => fetchLessonContent(lesson.id)}
+                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md transition duration-150 ease-in-out"
+                >
+                  {lesson.title}
+                </button>
+              </li>
+            ))
+          ) : (
+            <li className="text-gray-500 px-4 py-2">No lessons available</li>
+          )}
+        </ul>
+      </nav>
 
-export default WeekDetail;
+      {/* Main Content */}
+      <main className="flex-1 p-8 overflow-y-auto">
+        <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6">
+          {currentLesson ? (
+            <>
+              <h1 className="text-3xl font-bold mb-4">{currentLesson.name}</h1>
+              <div dangerouslySetInnerHTML={{ __html: currentLesson.content }} />
+              {currentLesson.videoUrl && (
+                <div className="mt-6">
+                  <h2 className="text-xl font-semibold mb-2">Video Content</h2>
+                  <video src={currentLesson.videoUrl} controls className="w-full" />
+                </div>
+              )}
+              {currentLesson.attachments && (
+                <div className="mt-6">
+                  <h2 className="text-xl font-semibold mb-2">Attachments</h2>
+                  <a href={currentLesson.attachments} className="text-blue-600 hover:underline">
+                    Download Attachment
+                  </a>
+                </div>
+              )}
+            </>
+          ) : (
+            <p className="text-xl text-gray-600">Select a lesson from the sidebar to view its content.</p>
+          )}
+        </div>
+      </main>
+    </div>
+  )
+}
+
+export default WeekDetail
+
