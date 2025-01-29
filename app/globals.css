@@ -101,7 +101,7 @@ html, body, :root{
 
 h1{
   font-size: 25px;
-  padding-bottom: 15px;
+  /* padding-bottom: 15px; */
 }
 h2{
   font-size: 19px;
