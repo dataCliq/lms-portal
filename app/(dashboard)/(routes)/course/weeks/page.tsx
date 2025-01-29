@@ -8,6 +8,7 @@ export default function WeekList() {
   interface Lesson {
     title: string
     id: string
+    slug: string // Add this line
   }
 
   interface Week {
@@ -25,12 +26,12 @@ export default function WeekList() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const searchParams = useSearchParams()
-  const courseId = searchParams?.get("courseId") || "sql" // Default to "sql" if not provided
+  const courseId = searchParams?.get("courseId") || "sql"
 
   useEffect(() => {
     const fetchWeeks = async () => {
       try {
-        const response = await fetch("/api/course-week")
+        const response = await fetch(`/api/course-week?courseId=${courseId}`)
         const result = await response.json()
         if (result.success) {
           console.log("Fetched weeks data:", result.data)
@@ -47,12 +48,10 @@ export default function WeekList() {
     }
 
     fetchWeeks()
-  }, [])
+  }, [courseId])
 
   if (loading) return <p className="text-center text-lg text-blue-500">Loading...</p>
   if (error) return <p className="text-center text-lg text-red-500">Error: {error}</p>
-
-  const filteredWeeks = weeks.filter((week) => week.courseId === courseId)
 
   return (
     <div className="p-6 max-w-screen-xl mx-auto">
@@ -61,7 +60,7 @@ export default function WeekList() {
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredWeeks.map((week) => (
+        {weeks.map((week) => (
           <div
             key={week._id}
             className="bg-white rounded-xl shadow-lg hover:shadow-2xl p-6 transition duration-300 transform hover:scale-105"
@@ -84,7 +83,9 @@ export default function WeekList() {
               </ul>
             </div>
             <div className="flex justify-between items-center mt-6">
-              <Link href={`/course/weeks/${week.weekId}?courseId=${courseId}&slug=${week.slug}`}>
+              <Link
+                href={`/course/weeks/${week.weekId}?courseId=${courseId}&slug=${week.slug}/${week.lessonList[0]?.slug || ""}`}
+              >
                 <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
                   Start Now
                 </button>

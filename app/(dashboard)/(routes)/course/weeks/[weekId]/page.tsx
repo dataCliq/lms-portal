@@ -1,12 +1,12 @@
 "use client"
 
 import { useRouter, useParams } from "next/navigation"
-import { useSearchParams } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 
 interface Lesson {
   title: string
   id: string
+  slug: string
 }
 
 interface Week {
@@ -41,58 +41,114 @@ const WeekDetail = () => {
   const [error, setError] = useState("")
   const router = useRouter()
   const params = useParams()
-  const searchParams = useSearchParams()
-  const slug = searchParams?.get("slug") || ""
-  const courseId = searchParams?.get("courseId") || ""
   const weekId = params?.weekId as string
 
-  useEffect(() => {
-    const fetchWeekData = async () => {
-      if (!slug || !courseId || !weekId) {
-        setError("Missing slug, courseId, or weekId")
-        setLoading(false)
-        return
-      }
-
-      try {
-        console.log("Fetching data for:", { courseId, slug, weekId })
-        const response = await fetch(`/api/course-week?courseId=${courseId}&slug=${slug}&weekId=${weekId}`)
-        const result = await response.json()
-        console.log("API response:", result)
-        if (result.success && result.data) {
-          setWeek(result.data)
-          console.log("Week data set:", result.data)
-        } else {
-          setError("Failed to fetch week data")
-        }
-      } catch (err) {
-        setError("Error fetching week data")
-        console.error("Fetch error:", err)
-      } finally {
-        setLoading(false)
+  const getSearchParams = useCallback(() => {
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search)
+      return {
+        slug: searchParams.get("slug") || "",
+        courseId: searchParams.get("courseId") || "",
       }
     }
+    return { slug: "", courseId: "" }
+  }, [])
 
-    fetchWeekData()
-  }, [courseId, slug, weekId])
+  const fetchWeekData = useCallback(async () => {
+    const { slug, courseId } = getSearchParams()
+    if (!slug || !courseId || !weekId) {
+      setError("Missing slug, courseId, or weekId")
+      setLoading(false)
+      return
+    }
 
-  const fetchLessonContent = async (lessonId: string) => {
     try {
-      console.log("Fetching lesson content for:", { courseId, weekId, lessonId })
-      const response = await fetch(`/api/course-content?courseId=${courseId}&weekId=${weekId}&lessonId=${lessonId}`)
+      console.log("Fetching data for:", { courseId, slug, weekId })
+      const response = await fetch(`/api/course-week?courseId=${courseId}&slug=${slug.split("/")[0]}&weekId=${weekId}`)
       const result = await response.json()
-      console.log("Lesson content API response:", result)
+      console.log("API response:", result)
       if (result.success && result.data) {
-        setCurrentLesson(result.data)
-        console.log("Current lesson set:", result.data)
+        setWeek(result.data)
+        console.log("Week data set:", result.data)
+
+        // Fetch the lesson content if a lesson slug is provided
+        const lessonSlug = slug.split("/")[1]
+        if (lessonSlug) {
+          const lesson = result.data.lessonList.find((l: Lesson) => l.slug === lessonSlug)
+          if (lesson) {
+            await fetchLessonContent(lesson.id)
+          }
+        } else {
+          setCurrentLesson(null)
+        }
       } else {
-        setError("Failed to fetch lesson content")
+        setError("Failed to fetch week data")
       }
     } catch (err) {
-      setError("Error fetching lesson content")
+      setError("Error fetching week data")
       console.error("Fetch error:", err)
+    } finally {
+      setLoading(false)
     }
-  }
+  }, [weekId, getSearchParams])
+
+  const fetchLessonContent = useCallback(
+    async (lessonId: string) => {
+      const { courseId } = getSearchParams()
+      try {
+        console.log("Fetching lesson content for:", { courseId, weekId, lessonId })
+        const response = await fetch(`/api/lesson-content?courseId=${courseId}&weekId=${weekId}&lessonId=${lessonId}`)
+        const result = await response.json()
+        console.log("Lesson content API response:", result)
+        if (result.success && result.data) {
+          setCurrentLesson(result.data)
+          console.log("Current lesson set:", result.data)
+
+          // Update the URL with the new lesson slug
+          const newSlug = `${week?.slug}/${result.data.slug}`
+          router.push(`/course/weeks/${weekId}?courseId=${courseId}&slug=${newSlug}`, undefined)
+
+          // Save the current lesson state to sessionStorage
+          sessionStorage.setItem("currentLesson", JSON.stringify(result.data))
+        } else {
+          setError("Failed to fetch lesson content")
+        }
+      } catch (err) {
+        setError("Error fetching lesson content")
+        console.error("Fetch error:", err)
+      }
+    },
+    [weekId, week, router, getSearchParams],
+  )
+
+  useEffect(() => {
+    const initializePageState = async () => {
+      // Try to load the lesson state from sessionStorage
+      const savedLesson = sessionStorage.getItem("currentLesson")
+      if (savedLesson) {
+        setCurrentLesson(JSON.parse(savedLesson))
+      }
+
+      await fetchWeekData()
+    }
+
+    initializePageState()
+  }, [fetchWeekData])
+
+  useEffect(() => {
+    const handlePopState = () => {
+      // Clear the saved lesson state
+      sessionStorage.removeItem("currentLesson")
+      // Reload the page to fetch fresh data
+      window.location.reload()
+    }
+
+    window.addEventListener("popstate", handlePopState)
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState)
+    }
+  }, [])
 
   console.log("Current week state:", week)
   console.log("Current lesson state:", currentLesson)
