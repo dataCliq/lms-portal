@@ -8,7 +8,7 @@ const HomePage = () => {
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-cover bg-center">
       {/* Hero Section */}
-      <div className="w-full">
+      <div className="w-full pt-20">
         <HeroSection />
       </div>
 
@@ -16,7 +16,7 @@ const HomePage = () => {
       <div className="w-full py-10" /> 
 
       {/* Card Section */}
-      <div className="w-full ">
+      <div className="w-full">
         <CardSection />
       </div>
 
@@ -24,7 +24,7 @@ const HomePage = () => {
       <div className="w-full py-8" />
 
       {/* Dynamic Course Cards */}
-      <div className="mt-10">
+      <div className="mt-10 w-full">
         <h2 className="text-2xl font-bold text-center mb-6">Our Courses</h2>
         <CourseCard /> {/* Fetches courses from the database */}
       </div>
@@ -35,4 +35,3 @@ const HomePage = () => {
 };
 
 export default HomePage;
-
