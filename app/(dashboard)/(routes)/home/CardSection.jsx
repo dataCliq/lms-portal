@@ -20,6 +20,7 @@ const CardSection = () => {
                     <div className="p-6 border-2 rounded-lg w-full sm:w-[300px] h-[260px] flex flex-col justify-between transition-all duration-300 hover:scale-105 hover:transform shadow-lg text-center">
                         <div className="flex items-center justify-center text-4xl sm:text-5xl text-[#170F00] mt-2">
                             💻
+                            <i class="fa-solid fa-chart-line text-4xl text-[#FAA51D] mb-6"></i>
                         </div>
                         <h3 className="text-[17px] sm:text-[19px] font-semibold mb-2">Complete Curriculum</h3>
                         <p className="text-[14px] sm:text-[16px]">
@@ -40,9 +41,9 @@ const CardSection = () => {
                 {/* Center Image */}
                 <div className="w-full sm:w-1/3 lg:w-1/2 xl:w-1/3 flex justify-center">
                     <img
-                        src="https://via.placeholder.com/500"
+                        src='/card-section-image.jpg'
                         alt="Student"
-                        className="w-full sm:w-[400px] md:w-[500px] lg:w-[600px] xl:w-[700px] h-auto object-cover rounded-lg shadow-lg"
+                        className="w-full sm:w-[500px] md:w-[600px] lg:w-[700px] xl:w-[900px] h-[400px] object-cover rounded-lg shadow-lg"
                     />
                 </div>
 

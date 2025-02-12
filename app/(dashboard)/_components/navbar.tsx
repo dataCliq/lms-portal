@@ -1,13 +1,32 @@
 import Logo from "./logo";
 import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Add scroll event listener
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div
-      className={`w-full h-[65px] fixed top-0 z-50 px-4 md:px-10 bg-white shadow-md transition-all duration-300`}
+      className={`w-full h-[65px] fixed top-0 z-50 px-4 md:px-10 transition-all duration-300 ${
+        isScrolled
+          ? "bg-white/90 backdrop-blur-md shadow-md" // Glass effect when scrolled
+          : "bg-transparent" // Transparent background initially
+      }`}
     >
       <div className="h-full w-full flex items-center justify-between">
         {/* Logo Section */}
@@ -16,18 +35,24 @@ const Navbar = () => {
         </a>
 
         {/* Center Links (Hidden on Mobile) */}
-        <div className="hidden md:flex w-full md:w-[500px] h-full flex-row items-center justify-between md:mr-20">
-          <a href="#home" className="cursor-pointer px-2">
+        <div className="hidden md:flex w-full md:w-[600px] h-full flex-row items-center justify-between md:mr-20">
+          <a href="/home" className="cursor-pointer px-2">
             Home
           </a>
-          <a href="#features" className="cursor-pointer px-2">
-            Features
-          </a>
-          <a href="#pricing" className="cursor-pointer px-2">
-            Pricing
+          <a href="/courses" className="cursor-pointer px-2">
+          Courses
           </a>
           <a href="#contact" className="cursor-pointer px-2">
-            Contact
+          Bootcamp
+          </a>
+          <a href="#contact" className="cursor-pointer px-2">
+          About
+          </a>
+          <a href="#contact" className="cursor-pointer px-2">
+          Blog
+          </a>
+          <a href="#contact" className="cursor-pointer px-2">
+          Contact Us
           </a>
         </div>
 
@@ -38,7 +63,7 @@ const Navbar = () => {
               Sign In
             </a>
           </div>
-          <div className="bg-[#FDCE39] px-[30px] py-[10px] rounded-full">
+          <div className="bg-[#F4A500] px-[30px] py-[10px] rounded-full">
             <a href="#signup" className="cursor-pointer">
               Sign Up
             </a>
@@ -86,21 +111,23 @@ const Navbar = () => {
               className="cursor-pointer w-full text-left text-gray-800 font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
-              Features
+              Courses
             </a>
             <a
               href="#pricing"
               className="cursor-pointer w-full text-left text-gray-800 font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
-              Pricing
+              Resources
             </a>
             <a
               href="#contact"
               className="cursor-pointer w-full text-left text-gray-800 font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
-              Contact
+              Bootcamp
+
+
             </a>
 
             <hr className="w-full border-t border-gray-300" />

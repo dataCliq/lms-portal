@@ -8,12 +8,12 @@ const HomePage = () => {
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-cover bg-center">
       {/* Hero Section */}
-      <div className="w-full pt-20">
+      <div className="w-full pt-10">
         <HeroSection />
       </div>
 
       {/* Add Controlled Gap */}
-      <div className="w-full py-10" /> 
+      <div className="w-full" /> 
 
       {/* Card Section */}
       <div className="w-full">

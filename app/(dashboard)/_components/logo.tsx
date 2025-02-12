@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 const Logo = () => {
     return ( 
-        <Image height={80} width={80} alt='logo' src='/logo.jpg' className='cursor-pointer hover:animate-slowspin'/>
+        <Image height={140} width={150} alt='logo' src='/logo.png' className='cursor-pointer hover:animate-slowspin'/>
      );
 }
  

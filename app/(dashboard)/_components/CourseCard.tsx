@@ -1,6 +1,7 @@
 'use client';
 
 import Link from "next/link";
+import 'font-awesome/css/font-awesome.min.css';
 import React, { useEffect, useState } from "react";
 
 interface Course {
