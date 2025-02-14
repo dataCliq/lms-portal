@@ -20,31 +20,43 @@ const CardSection = () => {
                 <div className="flex flex-col gap-6 w-full sm:w-1/3 items-center ">
                     {/** Point 1 **/}
                     <div
-                        class="bg-white w-[300px] rounded-[30px] flex flex-col justify-center shadow-lg hover:shadow-lg min-h-[280px] dark:bg-gray-800 dark:text-white items-start relative group"
+                        className="service-card w-[300px] shadow-xl cursor-pointer snap-start shrink-0 py-8 px-6 bg-white flex flex-col items-start gap-3 transition-all duration-300 group hover:bg-gradient-to-r from-[#C48200] via-[#A65D00] to-[#924901]"
                     >
-                        <div class="m-5">
-                            <div
-                                class="w-12 h-12 flex items-center justify-center absolute inset-x-0 top-0 ml-6 mt-6"
-                            >
-                            </div>
+                        <svg
+                            stroke-linejoin="round"
+                            stroke-linecap="round"
+                            stroke-width="2"
+                            stroke="#000000"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            className="text-5xl h-12 w-12 stroke-gray-800 group-hover:stroke-black-400"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <rect ry="2" rx="2" height="14" width="20" y="3" x="2"></rect>
+                            <line y2="21" x2="16" y1="21" x1="8"></line>
+                            <line y2="21" x2="12" y1="17" x1="12"></line>
+                        </svg>
 
-                            <div className="mt-4 text-left w-full mb-3">
-                                <h2 className="text-2xl roboto-mono-500 text-gray-800 dark:text-white">
-                                Complete Curriculum
-                                </h2>
-                                <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
-                                Master <b>MySQL</b>, <b>PostgreSQL</b>, <b>Tableau</b>, <b>Power BI</b>, <b>Python</b>—all in one place.
-                                </p>
-                            </div>
-                            <a href="#">
-                                <div
-                                    className="bg-gray-300 dark:bg-gray-700 w-10 h-10 rounded-full absolute bottom-0 left-0 m-4 flex justify-center items-center hover:ring-4 ring-gray-200 dark:ring-gray-400 hover:transition duration-700 ease-in-out"
-                                >
-                                    
-                                </div>
-                            </a>
-                        </div>
+                        <p className="font-bold text-2xl group-hover:text-black text-black/80">
+                            WEBSITE SEO
+                        </p>
+                        <p className="text-black-400 text-sm">
+                            Website ravida surna eveti semen the conse tusio anivite dianne one nivam
+                            acestion vue artin dictum.
+                        </p>
+                        <p
+  className="text-5xl font-bold self-end"
+  style={{
+    WebkitTextStroke: "1px gray",
+    WebkitTextFillColor: "transparent",
+  }}
+>
+                            09
+                        </p>
                     </div>
+
+
+
 
                     {/* <div className="p-6 rounded-lg w-full sm:w-[300px] h-[260px] flex flex-col justify-between transition-all duration-300 hover:scale-105 hover:transform shadow-lg text-center">
                         <div className="flex items-center justify-center text-4xl sm:text-5xl text-[#170F00] mt-2 bg-[]">
