@@ -35,8 +35,6 @@ const HeroSection = () => {
           </span>
 
 
-
-
         </motion.h1>
 
         {/* Subtitle */}
