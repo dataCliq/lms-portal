@@ -107,3 +107,191 @@ h2{
   font-size: 19px;
 }
 
+/* app/globals.css */
+@keyframes grow-shrink {
+  0%, 100% { height: 0; }
+  50% { height: 100px; }
+}
+
+.animate-[grow-shrink_1.5s_ease-in-out_infinite] {
+  animation: grow-shrink 1.5s ease-in-out infinite;
+}
+.animate-[grow-shrink_1.5s_ease-in-out_0.2s_infinite] {
+  animation: grow-shrink 1.5s ease-in-out 0.2s infinite;
+}
+.animate-[grow-shrink_1.5s_ease-in-out_0.4s_infinite] {
+  animation: grow-shrink 1.5s ease-in-out 0.4s infinite;
+}
+.animate-[grow-shrink_1.5s_ease-in-out_0.6s_infinite] {
+  animation: grow-shrink 1.5s ease-in-out 0.6s infinite;
+}
+.animate-[grow-shrink_1.5s_ease-in-out_0.8s_infinite] {
+  animation: grow-shrink 1.5s ease-in-out 0.8s infinite;
+}
+
+/* Apply to the container holding the lesson content */
+.lesson-content {
+  font-family: 'Inter', 'Arial', sans-serif; /* Clean, readable font */
+  line-height: 1.6; /* Improved readability */
+  color: #333; /* Softer black for less strain */
+  max-width: 800px; /* Constrain width for readability */
+  margin: 0 auto; /* Center the content */
+  padding: 20px; /* Breathing room */
+}
+
+/* Headings */
+.lesson-content h1 {
+  font-size: 2.25rem; /* ~36px */
+  font-weight: 700;
+  color: #1a1a1a; /* Darker for emphasis */
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.lesson-content h2 {
+  font-size: 1.75rem; /* ~28px */
+  font-weight: 600;
+  color: #2c2c2c;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #e5e7eb; /* Subtle underline */
+  padding-bottom: 0.5rem;
+}
+
+/* Paragraphs */
+.lesson-content p {
+  font-size: 1.125rem; /* ~18px */
+  margin-bottom: 1.25rem;
+}
+
+/* Strong tags (bold text) */
+.lesson-content strong {
+  font-weight: 700;
+  color: #1f2937; /* Slightly darker for emphasis */
+}
+
+/* Unordered Lists */
+.lesson-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.lesson-content ul li {
+  font-size: 1.125rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Code Blocks (pre > code) */
+/* Terminal-Style Code Block (Light Mode) for <pre> */
+.lesson-content pre {
+  background-color: #ffffff; /* White background for light mode */
+  border: 1px solid #e5e7eb; /* Light gray border */
+  border-radius: 8px; /* Rounded corners */
+  width: 100%; /* Full width by default */
+  margin-bottom: 1.5rem; /* Spacing below */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  font-family: 'Fira Code', 'Courier New', monospace; /* Monospace for code */
+  font-size: 0.95rem; /* Consistent size for code */
+  overflow-x: auto; /* Horizontal scroll for long lines */
+  padding: 0; /* Remove default padding to control sizing precisely */
+  display: flex; /* Use flex to stack header and content vertically */
+  flex-direction: column; /* Stack children vertically */
+  height: auto; /* Ensure height fits content dynamically */
+}
+
+/* Header with Circles and Filename */
+.lesson-content pre .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 1rem; /* Minimal padding to keep header snug at the top */
+  background-color: #f3f4f6; /* Very light gray for header in light mode */
+  border-bottom: 1px solid #e5e7eb; /* Light border */
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+  margin: 0; /* Remove any margin to ensure it sits at the top */
+}
+
+/* Colored Circles */
+.lesson-content pre .circles {
+  display: flex;
+  gap: 0.25rem; /* Gap between circles */
+}
+
+.lesson-content pre .circle {
+  width: 0.75rem; /* 12px */
+  height: 0.75rem; /* 12px */
+  border-radius: 50%; /* Circular shape */
+}
+
+.lesson-content pre .circle-red {
+  background-color: #ef4444; /* Red */
+}
+
+.lesson-content pre .circle-yellow {
+  background-color: #f59e0b; /* Yellow */
+}
+
+.lesson-content pre .circle-green {
+  background-color: #10b981; /* Green */
+}
+
+/* Filename/Type (e.g., "delete_data.sql") */
+.lesson-content pre .filename {
+  font-size: 0.875rem; /* Small text */
+  font-family: 'Inter', sans-serif; /* Match lesson content font */
+  color: #1f2937; /* Dark text for light mode */
+  margin: 0; /* Remove any margin to keep it snug */
+}
+
+/* Code Content (Commands and Output) */
+.lesson-content pre .code-content {
+  padding: 1rem; /* Padding for code */
+  white-space: pre-wrap; /* Preserve formatting but wrap long lines */
+  flex-grow: 1; /* Allow code content to grow and fill remaining space */
+}
+
+/* Syntax Highlighting for Code */
+.lesson-content pre .keyword {
+  color: #9333ea; /* Purple for keywords like "DELETE" */
+}
+
+.lesson-content pre .function-name {
+  color: #1d4ed8; /* Blue for function names like "customers" */
+}
+
+.lesson-content pre .string {
+  color: #059669; /* Green for strings like "'2023-01-01'" */
+}
+
+.lesson-content pre .punctuation {
+  color: #4a5568; /* Gray for punctuation like "<", ";" */
+}
+
+/* Responsive Adjustments for <pre> */
+@media (max-width: 768px) {
+  .lesson-content pre {
+    width: 100%; /* Full width on mobile */
+    padding: 0; /* No padding on mobile */
+  }
+}
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .lesson-content {
+    padding: 15px;
+  }
+
+  .lesson-content h1 {
+    font-size: 1.875rem; /* ~30px */
+  }
+
+  .lesson-content h2 {
+    font-size: 1.5rem; /* ~24px */
+  }
+
+  .lesson-content p,
+  .lesson-content ul li {
+    font-size: 1rem; /* ~16px */
+  }
+}

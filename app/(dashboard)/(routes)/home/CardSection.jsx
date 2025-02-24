@@ -1,7 +1,7 @@
 'use client';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolderOpen, faChartBar } from "@fortawesome/free-regular-svg-icons";
-import { faChartLine, faLaptop, faRankingStar } from "@fortawesome/free-solid-svg-icons";
+import { faChartLine, faLaptop, faRankingStar, faUsers, faRocket } from "@fortawesome/free-solid-svg-icons";
 
 const CardSection = () => {
     return (
@@ -19,27 +19,26 @@ const CardSection = () => {
                 {/* Left Cards */}
                 <div className="flex flex-col gap-6 w-full sm:w-1/3 items-center ">
                     {/** Point 1 **/}
-                    <div class="sm:w-[300px] h-[260px] bg-white shadow-[0px_0px_15px_rgba(0,0,0,0.09)] p-9 relative overflow-hidden rounded-2xl flex flex-col items-center text-center">
-                        <div class="flex items-center justify-center text-4xl sm:text-5xl text-[#170F00]">
+                    <div className="sm:w-[300px] h-[260px] bg-white shadow-[0px_0px_15px_rgba(0,0,0,0.09)] p-9 relative overflow-hidden rounded-2xl flex flex-col items-center text-center">
+                        <div className="flex items-center justify-center text-4xl sm:text-5xl text-[#170F00]">
                             <FontAwesomeIcon icon={faChartBar} className="text-5xl text-[#ffbd30] mb-4 bg-[#ffd88459] p-3 rounded-2xl" />
                         </div>
-                        <h1 class="font-bold text-xl">Complete Curriculum</h1>
-                        <p class="text-sm text-zinc-500 leading-6 mt-2">
+                        <h1 className="font-bold text-xl">Complete Curriculum</h1>
+                        <p className="text-sm text-zinc-500 leading-6 mt-2">
                             Master <b>MySQL</b>, <b>PostgreSQL</b>, <b>Tableau</b>, <b>Power BI</b>, <b>Python</b>—all in one place.
                         </p>
                     </div>
 
                     {/** Point 2 **/}
-                    <div class="sm:w-[300px] h-[260px] bg-white shadow-[0px_0px_15px_rgba(0,0,0,0.09)] p-9 relative overflow-hidden rounded-2xl flex flex-col items-center text-center">
-                        <div class="flex items-center justify-center text-4xl sm:text-5xl text-[#170F00]">
-                        <FontAwesomeIcon icon={faFolderOpen} className="text-5xl text-[#ffbd30] mb-6 bg-[#ffd88459] p-3 rounded-2xl" />
+                    <div className="sm:w-[300px] h-[260px] bg-white shadow-[0px_0px_15px_rgba(0,0,0,0.09)] p-9 relative overflow-hidden rounded-2xl flex flex-col items-center text-center">
+                        <div className="flex items-center justify-center text-4xl sm:text-5xl text-[#170F00]">
+                            <FontAwesomeIcon icon={faFolderOpen} className="text-5xl text-[#ffbd30] mb-6 bg-[#ffd88459] p-3 rounded-2xl" />
                         </div>
-                        <h1 class="font-bold text-xl">Hands-On Projects</h1>
-                        <p class="text-sm text-zinc-500 leading-6 mt-2">
-                        From basics to real-world tasks, build your skills step-by-step.
+                        <h1 className="font-bold text-xl">Hands-On Projects</h1>
+                        <p className="text-sm text-zinc-500 leading-6 mt-2">
+                            From basics to real-world tasks, build your skills step-by-step.
                         </p>
                     </div>
-
                 </div>
 
                 {/* Center Image */}
@@ -54,37 +53,28 @@ const CardSection = () => {
                 {/* Right Cards */}
                 <div className="flex flex-col gap-6 w-full sm:w-1/3 items-center">
                     {/** Point 3 **/}
-                    <div class="sm:w-[300px] h-[260px] bg-white shadow-[0px_0px_15px_rgba(0,0,0,0.09)] p-9 relative overflow-hidden rounded-2xl flex flex-col items-center text-center">
-                        <div class="flex items-center justify-center text-4xl sm:text-5xl text-[#170F00]">
-                        <FontAwesomeIcon icon={faLaptop} className="text-5xl text-[#ffbd30] mb-6 bg-[#ffd88459] p-3 rounded-2xl" />
+                    <div className="sm:w-[300px] h-[260px] bg-white shadow-[0px_0px_15px_rgba(0,0,0,0.09)] p-9 relative overflow-hidden rounded-2xl flex flex-col items-center text-center">
+                        <div className="flex items-center justify-center text-4xl sm:text-5xl text-[#170F00]">
+                            <FontAwesomeIcon icon={faLaptop} className="text-5xl text-[#ffbd30] mb-6 bg-[#ffd88459] p-3 rounded-2xl" />
                         </div>
-                        <h1 class="font-bold text-xl">Interactive Practice</h1>
-                        <p class="text-sm text-zinc-500 leading-6 mt-2">
-                        Tackle real scenarios and practice with industry-focused exercises.
+                        <h1 className="font-bold text-xl">Interactive Practice</h1>
+                        <p className="text-sm text-zinc-500 leading-6 mt-2">
+                            Tackle real scenarios and practice with industry-focused exercises.
                         </p>
                     </div>
 
                     {/** Point 4 **/}
-                    <div class="sm:w-[300px] h-[260px] bg-white shadow-[0px_0px_15px_rgba(0,0,0,0.09)] p-9 relative overflow-hidden rounded-2xl flex flex-col items-center text-center">
-                        <div class="flex items-center justify-center text-4xl sm:text-5xl text-[#170F00]">
-                        <FontAwesomeIcon icon={faRankingStar} className="text-5xl text-[#ffbd30] mb-6 bg-[#ffd88459] p-3 rounded-2xl" />
+                    <div className="sm:w-[300px] h-[260px] bg-white shadow-[0px_0px_15px_rgba(0,0,0,0.09)] p-9 relative overflow-hidden rounded-2xl flex flex-col items-center text-center">
+                        <div className="flex items-center justify-center text-4xl sm:text-5xl text-[#170F00]">
+                            <FontAwesomeIcon icon={faRankingStar} className="text-5xl text-[#ffbd30] mb-6 bg-[#ffd88459] p-3 rounded-2xl" />
                         </div>
-                        <h1 class="font-bold text-xl">Interview-Ready</h1>
-                        <p class="text-sm text-zinc-500 leading-6 mt-2">
-                        Prepare with level-wise questions tailored for top companies.
+                        <h1 className="font-bold text-xl">Interview-Ready</h1>
+                        <p className="text-sm text-zinc-500 leading-6 mt-2">
+                            Prepare with level-wise questions tailored for top companies.
                         </p>
                     </div>
                 </div>
             </div>
-            <div className="w-full text-center py-6">
-                <h1 className="text-3xl font-bold text-[#804000] mt-8 items-start ">Why Choose Us?</h1>
-                <p className="text-lg text-[#170f00ec] max-w-2xl mx-auto mt-2">
-                    Join a community of aspiring data analysts and work on real-world projects with expert mentorship.
-                </p>
-            </div>
-
-
-
         </div>
     );
 };

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import 'font-awesome/css/font-awesome.min.css';
 import React, { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBook } from "@fortawesome/free-solid-svg-icons";
 
 interface Course {
     _id: string,
@@ -96,20 +98,7 @@ const CourseCard: React.FC = () => {
                             </h2>
                             <div className="flex justify-between items-center w-full mt-4">
                                 <div className="flex items-center text-sm text-gray-600 px-3 py-1">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth={1.5}
-                                        stroke="currentColor"
-                                        className="w-4 h-4 mr-2"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M16.5 3.75H7.5m9 0a2.25 2.25 0 012.25 2.25v12a2.25 2.25 0 01-2.25 2.25m-9-16.5A2.25 2.25 0 005.25 6v12a2.25 2.25 0 002.25 2.25m9 0h-9"
-                                        />
-                                    </svg>
+                                <FontAwesomeIcon icon={faBook} className="text-2xl text-[#ffbd30] mr-2" />
                                     {course.weekCount} Lessons
                                 </div>
                                 {/* <Link href={`/course/${encodeURIComponent(course.courseId)}`}>
