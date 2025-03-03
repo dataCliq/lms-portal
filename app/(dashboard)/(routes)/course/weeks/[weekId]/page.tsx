@@ -172,19 +172,19 @@ const WeekDetail = () => {
 
       {/* Main Content Area - Adjusted for top navbar height */}
       <main className="flex-1 ml-64 pt-16 p-8 overflow-y-auto">
-  <div className="lesson-content">
-    {currentLesson ? (
-      <>
-        <div
-          className="prose prose-lg text-[#666] mb-6"
-          dangerouslySetInnerHTML={{ __html: currentLesson.content }}
-        />
-      </>
-    ) : (
-      <p className="text-xl text-[#666] text-center">Select a lesson from the sidebar to view its content.</p>
-    )}
-  </div>
-</main>
+        <div className="lesson-content">
+          {currentLesson ? (
+            <>
+              <div
+                className="prose prose-lg text-[#666] mb-6"
+                dangerouslySetInnerHTML={{ __html: currentLesson.content }}
+              />
+            </>
+          ) : (
+            <p className="text-xl text-[#666] text-center">Select a lesson from the sidebar to view its content.</p>
+          )}
+        </div>
+      </main>
     </div>
   );
 };
