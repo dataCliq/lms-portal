@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 html, body, :root{
   height: 100%;
 }
@@ -85,6 +86,26 @@ html, body, :root{
   }
 }
 
+.keyword {
+  @apply text-blue-600 cursor-pointer underline;
+
+}
+.keyword {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+.prose * {
+  pointer-events: auto;
+}
+
+.keyword:hover {
+  @apply text-blue-800;
+}
+
+/* Ensure prose doesn't interfere with our custom spans */
+.prose .keyword {
+  @apply inline;
+}
 /* Optionally, add this in your global CSS if you're not using the config file approach */
 
 /* Neomorphic Shadow */
