@@ -134,30 +134,40 @@ h2{
   50% { height: 100px; }
 }
 
-.animate-[grow-shrink_1.5s_ease-in-out_infinite] {
+@keyframes grow-shrink {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.animate-grow-shrink {
   animation: grow-shrink 1.5s ease-in-out infinite;
 }
-.animate-[grow-shrink_1.5s_ease-in-out_0.2s_infinite] {
+
+.animate-grow-shrink-delay-200 {
   animation: grow-shrink 1.5s ease-in-out 0.2s infinite;
 }
-.animate-[grow-shrink_1.5s_ease-in-out_0.4s_infinite] {
+
+.animate-grow-shrink-delay-400 {
   animation: grow-shrink 1.5s ease-in-out 0.4s infinite;
 }
-.animate-[grow-shrink_1.5s_ease-in-out_0.6s_infinite] {
+
+.animate-grow-shrink-delay-600 {
   animation: grow-shrink 1.5s ease-in-out 0.6s infinite;
 }
-.animate-[grow-shrink_1.5s_ease-in-out_0.8s_infinite] {
+
+.animate-grow-shrink-delay-800 {
   animation: grow-shrink 1.5s ease-in-out 0.8s infinite;
 }
 
-/* Global CSS for the lesson content */
-/* Global CSS for the lesson content with Poppins font */
 /* Global CSS for the lesson content with Poppins font */
 * {
   font-family: 'Poppins', sans-serif;
 }
 
-/* General Container */
 /* General Container */
 .lesson-container {
   width: 100%;
@@ -497,4 +507,52 @@ details[open] .accordion-content {
   .accordion-content {
     padding: 16px;
   }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Add styles for the keyword and definition accordion */
+.keyword {
+  color: #804000;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.keyword:hover {
+  color: #a05000;
+  border-radius: 2px;
+}
+
+.definition-accordion {
+  animation: slideDown 0.3s ease-out;
+  border-left: 3px solid #804000;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.inline-dropdown {
+  background: white;
+  border: 1px solid #f5f5f5;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 0.75rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
 }

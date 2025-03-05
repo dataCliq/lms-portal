@@ -21,6 +21,12 @@ interface Week {
   updatedAt: string;
 }
 
+interface Question {
+  id: string;
+  text: string;
+  answer?: string;
+}
+
 interface LessonContent {
   _id: string;
   weekId: number;
@@ -35,20 +41,39 @@ interface LessonContent {
   updatedAt: string;
 }
 
+interface DropdownState {
+  keyword: string;
+  definition: string;
+  nodeIndex: number;
+}
+
 const WeekDetail = () => {
   const [week, setWeek] = useState<Week | null>(null);
   const [currentLesson, setCurrentLesson] = useState<LessonContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [dropdown, setDropdown] = useState({
-    visible: false,
-    definition: "",
-    position: { x: 0, y: 0 },
-  });
+  const [dropdown, setDropdown] = useState<DropdownState | null>(null);
+  const [activeTab, setActiveTab] = useState<"beginner" | "intermediate" | "advanced">("beginner");
+  const [openAccordion, setOpenAccordion] = useState<string | null>(null);
   const router = useRouter();
   const params = useParams();
   const weekId = params?.weekId as string;
   const contentRef = useRef<HTMLDivElement>(null);
+
+  const questions = {
+    beginner: [
+      { id: "b1", text: "What is the difference between qualitative and quantitative data?" },
+      { id: "b2", text: "Explain what data cleaning means." },
+      { id: "b3", text: "Name 3 common data analysis tools." },
+    ],
+    intermediate: [
+      { id: "i1", text: "How would you handle missing data in a dataset?" },
+      { id: "i2", text: "What is a pivot table and its use?" },
+    ],
+    advanced: [
+      { id: "a1", text: "Describe a complex data analysis project you’ve worked on." },
+    ],
+  };
 
   const getSearchParams = useCallback(() => {
     if (typeof window !== "undefined") {
@@ -70,24 +95,16 @@ const WeekDetail = () => {
     }
 
     try {
-      console.log("Fetching week data:", { courseId, slug, weekId });
       const response = await fetch(
         `/api/course-week?courseId=${courseId}&slug=${slug.split("/")[0]}&weekId=${weekId}`
       );
       const result = await response.json();
-      console.log("Week data response:", result);
       if (result.success && result.data) {
         setWeek(result.data);
         const lessonSlug = slug.split("/")[1] || "";
         if (lessonSlug) {
           const lesson = result.data.lessonList.find((l: Lesson) => l.slug === lessonSlug);
-          if (lesson) {
-            await fetchLessonContent(lesson.id);
-          } else {
-            setCurrentLesson(null);
-          }
-        } else {
-          setCurrentLesson(null);
+          if (lesson) await fetchLessonContent(lesson.id);
         }
       } else {
         setError("Failed to fetch week data");
@@ -104,26 +121,21 @@ const WeekDetail = () => {
     async (lessonId: string) => {
       const { courseId } = getSearchParams();
       try {
-        console.log("Fetching lesson content:", { courseId, weekId, lessonId });
         const response = await fetch(
           `/api/lesson-content?courseId=${courseId}&weekId=${weekId}&lessonId=${lessonId}`
         );
         const result = await response.json();
-        console.log("Lesson content response:", result);
         if (result.success && result.data) {
-          console.log("Setting currentLesson:", result.data);
           setCurrentLesson(result.data);
           const newSlug = `${week?.slug}/${result.data.slug}`;
-          router.push(`/course/weeks/${weekId}?courseId=${courseId}&slug=${newSlug}`, undefined);
+          router.push(`/course/weeks/${weekId}?courseId=${courseId}&slug=${newSlug}`);
           sessionStorage.setItem("currentLesson", JSON.stringify(result.data));
         } else {
           setError("Failed to fetch lesson content");
-          setCurrentLesson(null);
         }
       } catch (err) {
         setError("Error fetching lesson content");
         console.error("Fetch error:", err);
-        setCurrentLesson(null);
       }
     },
     [weekId, week, router, getSearchParams]
@@ -131,9 +143,7 @@ const WeekDetail = () => {
 
   const fetchDefinition = async (keyword: string) => {
     try {
-      console.log("Fetching definition for:", keyword);
       const response = await axios.get(`/api/definitions?keyword=${encodeURIComponent(keyword)}`);
-      console.log("Definition response:", response.data);
       return response.data.definition || "No definition available";
     } catch (err) {
       console.error("Error fetching definition:", err);
@@ -144,96 +154,71 @@ const WeekDetail = () => {
   useEffect(() => {
     const initializePageState = async () => {
       const savedLesson = sessionStorage.getItem("currentLesson");
-      if (savedLesson) {
-        console.log("Restoring lesson from sessionStorage:", JSON.parse(savedLesson));
-        setCurrentLesson(JSON.parse(savedLesson));
-      }
+      if (savedLesson) setCurrentLesson(JSON.parse(savedLesson));
       await fetchWeekData();
     };
     initializePageState();
   }, [fetchWeekData]);
 
   useEffect(() => {
-    const handlePopState = () => {
-      sessionStorage.removeItem("currentLesson");
-      window.location.reload();
-    };
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, []);
+    if (!contentRef.current || !currentLesson) return;
 
-  useEffect(() => {
-    if (!contentRef.current) {
-      console.log("contentRef.current is missing");
-      return;
-    }
-    if (!currentLesson) {
-      console.log("currentLesson is missing");
-      return;
-    }
-
-    console.log("Setting up listeners for content:", currentLesson.content);
     const keywords = contentRef.current.querySelectorAll(".keyword");
-    console.log("Found keywords:", keywords.length);
-
-    if (keywords.length === 0) {
-      console.warn("No .keyword elements found in:", currentLesson.content);
-      return;
-    }
+    if (keywords.length === 0) return;
 
     const handleClick = async (e: Event) => {
       e.preventDefault();
       e.stopPropagation();
-      console.log("Click event triggered!");
-      const keyword = e.target as HTMLElement;
-      const keywordText = keyword.textContent?.trim() || "";
-      console.log("Keyword clicked:", keywordText);
-
+      const keywordElement = e.target as HTMLElement;
+      const keywordText = keywordElement.textContent?.trim() || "";
       const definition = await fetchDefinition(keywordText);
 
-      const rect = keyword.getBoundingClientRect();
-      const containerRect = contentRef.current!.getBoundingClientRect();
-      const x = rect.left - containerRect.left;
-      const y = rect.bottom - containerRect.top;
+      const keywordNodes = Array.from(keywords);
+      const nodeIndex = keywordNodes.indexOf(keywordElement);
 
-      console.log("Dropdown position:", { x, y });
-      setDropdown({ visible: true, definition, position: { x, y } });
+      const existingDropdown = contentRef.current?.querySelector(".inline-dropdown");
+      if (existingDropdown) existingDropdown.remove();
 
-      const { courseId } = getSearchParams();
-      const newSlug = `${week?.slug}/${currentLesson?.slug}/${keywordText}`;
-      console.log("Updating slug to:", newSlug);
-      router.push(`/course/weeks/${weekId}?courseId=${courseId}&slug=${newSlug}`, undefined);
+      setDropdown({ keyword: keywordText, definition, nodeIndex });
     };
 
-    keywords.forEach((keyword, index) => {
-      console.log(`Attaching listener to keyword ${index}:`, keyword.textContent);
-      keyword.style.cursor = "pointer";
-      keyword.style.pointerEvents = "auto";
-      keyword.addEventListener("click", handleClick);
-      keyword.addEventListener("mousedown", () => console.log("Mouse down on:", keyword.textContent));
-    });
-
-    return () => {
-      keywords.forEach((keyword, index) => {
-        console.log(`Removing listener from keyword ${index}:`, keyword.textContent);
-        keyword.removeEventListener("click", handleClick);
-        keyword.removeEventListener("mousedown", () => {});
-      });
-    };
-  }, [currentLesson, week, router, getSearchParams]);
+    keywords.forEach((keyword) => keyword.addEventListener("click", handleClick));
+    return () => keywords.forEach((keyword) => keyword.removeEventListener("click", handleClick));
+  }, [currentLesson, fetchDefinition]);
 
   useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (contentRef.current && !contentRef.current.contains(e.target as Node)) {
-        console.log("Closing dropdown");
-        setDropdown({ visible: false, definition: "", position: { x: 0, y: 0 } });
-      }
-    };
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, []);
+    if (!contentRef.current || !dropdown) return;
 
-  console.log("Rendering with:", { currentLesson, dropdown });
+    const keywords = contentRef.current.querySelectorAll(".keyword");
+    const keywordElement = keywords[dropdown.nodeIndex];
+
+    if (!keywordElement) return;
+
+    const dropdownElement = document.createElement("div");
+    dropdownElement.className = "inline-dropdown";
+    dropdownElement.innerHTML = `
+      <div class="flex justify-between items-center">
+        <p class="text-sm text-[#666]">${dropdown.definition}</p>
+        <button class="text-[#666] hover:text-[#804000] text-lg leading-none" aria-label="Close">×</button>
+      </div>
+    `;
+
+    const closeButton = dropdownElement.querySelector("button");
+    if (closeButton) closeButton.addEventListener("click", () => setDropdown(null));
+
+    keywordElement.insertAdjacentElement("afterend", dropdownElement);
+
+    return () => dropdownElement.remove();
+  }, [dropdown]);
+
+  const handleTabClick = (tab: "beginner" | "intermediate" | "advanced") => {
+    setActiveTab(tab);
+    setOpenAccordion(null); // Reset accordion when switching tabs
+  };
+
+  const toggleAccordion = (questionId: string) => {
+    setOpenAccordion(openAccordion === questionId ? null : questionId);
+  };
 
   if (loading) return <p className="text-center text-lg text-[#804000]">Loading...</p>;
   if (error) return <p className="text-center text-lg text-[#804000]">Error: {error}</p>;
@@ -266,19 +251,79 @@ const WeekDetail = () => {
       <main className="flex-1 ml-64 pt-16 p-8 overflow-y-auto">
         <div className="lesson-content" ref={contentRef}>
           {currentLesson ? (
-            <div className="relative">
-              <div
-                className="prose prose-lg text-[#666] mb-6"
-                dangerouslySetInnerHTML={{ __html: currentLesson.content }}
-              />
-              {dropdown.visible && (
-                <div
-                  className="absolute z-50 bg-white border border-[#f5f5f5] rounded-lg shadow-lg p-3 max-w-xs"
-                  style={{ left: `${dropdown.position.x}px`, top: `${dropdown.position.y}px` }}
-                >
-                  <p className="text-sm text-[#666]">{dropdown.definition}</p>
+            <div className="lesson-container">
+              <div dangerouslySetInnerHTML={{ __html: currentLesson.content }} />
+
+              {/* Enhanced Practice Interview Questions Section */}
+              <div className="accordion-section mt-8 bg-[#fafafa] p-6 rounded-lg shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold text-[#170F00]">
+                    Practice Interview Questions
+                  </h3>
+                  <span className="text-sm text-[#804000]">
+                    {questions[activeTab].length} Questions
+                  </span>
                 </div>
-              )}
+
+                {/* Improved Small Tab Chips */}
+                <div className="flex space-x-2 mb-6">
+                  {(["beginner", "intermediate", "advanced"] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => handleTabClick(tab)}
+                      className={`px-3 py-1 text-sm font-medium rounded-full transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#804000] focus:ring-opacity-50 ${
+                        activeTab === tab
+                          ? "bg-[#804000] text-white shadow-md scale-105"
+                          : "bg-[#f5f5f5] text-[#666] hover:bg-[#e0e0e0] hover:text-[#804000] hover:shadow-sm"
+                      }`}
+                      aria-label={`Show ${tab} questions`}
+                      aria-pressed={activeTab === tab}
+                    >
+                      <span className="capitalize">{tab}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Accordions */}
+                <div className="space-y-4">
+                  {questions[activeTab].length > 0 ? (
+                    questions[activeTab].map((question) => (
+                      <div
+                        key={question.id}
+                        className="bg-white rounded-lg shadow-sm border border-[#f5f5f5] overflow-hidden transition-all duration-200"
+                      >
+                        <button
+                          onClick={() => toggleAccordion(question.id)}
+                          className="w-full text-left px-5 py-4 text-[#666] hover:text-[#804000] hover:bg-[#f9f9f9] flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-[#804000] focus:ring-opacity-50"
+                          aria-expanded={openAccordion === question.id}
+                          aria-controls={`accordion-content-${question.id}`}
+                        >
+                          <span className="text-base font-medium">{question.text}</span>
+                          <span
+                            className={`text-lg transition-transform duration-300 ${
+                              openAccordion === question.id ? "rotate-90" : ""
+                            }`}
+                          >
+                            >
+                          </span>
+                        </button>
+                        {openAccordion === question.id && (
+                          <div
+                            id={`accordion-content-${question.id}`}
+                            className="px-5 py-4 bg-[#f5f5f5] text-[#666] text-sm animate-fade-in"
+                          >
+                            <p>{question.answer || "Answer coming soon..."}</p>
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-[#666] text-center py-4">
+                      No questions available for this level.
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
           ) : (
             <p className="text-xl text-[#666] text-center">
@@ -287,6 +332,23 @@ const WeekDetail = () => {
           )}
         </div>
       </main>
+
+      {/* Optional CSS for Animation */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.3s ease-in-out;
+        }
+      `}</style>
     </div>
   );
 };
