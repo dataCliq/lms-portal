@@ -120,6 +120,11 @@ const WeekDetail = () => {
   const fetchLessonContent = useCallback(
     async (lessonId: string) => {
       const { courseId } = getSearchParams();
+      if (!courseId || !weekId || !lessonId) {
+        setError("Missing courseId, weekId, or lessonId");
+        return;
+      }
+  
       try {
         const response = await fetch(
           `/api/lesson-content?courseId=${courseId}&weekId=${weekId}&lessonId=${lessonId}`
@@ -128,13 +133,17 @@ const WeekDetail = () => {
         if (result.success && result.data) {
           setCurrentLesson(result.data);
           const newSlug = `${week?.slug}/${result.data.slug}`;
+          if (!week?.slug || !result.data.slug) {
+            setError("Invalid slug data for navigation");
+            return;
+          }
           router.push(`/course/weeks/${weekId}?courseId=${courseId}&slug=${newSlug}`);
           sessionStorage.setItem("currentLesson", JSON.stringify(result.data));
         } else {
           setError("Failed to fetch lesson content");
         }
       } catch (err) {
-        setError("Error fetching lesson content");
+        setError("Error fetching lesson content: " + err.message);
         console.error("Fetch error:", err);
       }
     },
@@ -150,6 +159,29 @@ const WeekDetail = () => {
       return "Error fetching definition";
     }
   };
+
+  // New function to handle "Next" button navigation
+  const goToNextLesson = useCallback(() => {
+    if (!week?.lessonList || !currentLesson) return;
+
+    const currentLessonIndex = week.lessonList.findIndex(
+      (lesson) => lesson.id === currentLesson.lessonId
+    );
+
+    if (currentLessonIndex === -1) {
+      setError("Current lesson not found in lesson list");
+      return;
+    }
+
+    const nextLessonIndex = currentLessonIndex + 1;
+    if (nextLessonIndex < week.lessonList.length) {
+      const nextLesson = week.lessonList[nextLessonIndex];
+      fetchLessonContent(nextLesson.id);
+    } else {
+      console.log("No more lessons in this week");
+      // Optionally, you could redirect to the next week or show a message
+    }
+  }, [week, currentLesson, fetchLessonContent]);
 
   useEffect(() => {
     const initializePageState = async () => {
@@ -213,11 +245,20 @@ const WeekDetail = () => {
 
   const handleTabClick = (tab: "beginner" | "intermediate" | "advanced") => {
     setActiveTab(tab);
-    setOpenAccordion(null); // Reset accordion when switching tabs
+    setOpenAccordion(null);
   };
 
   const toggleAccordion = (questionId: string) => {
     setOpenAccordion(openAccordion === questionId ? null : questionId);
+  };
+
+  // Check if there's a next lesson
+  const hasNextLesson = () => {
+    if (!week?.lessonList || !currentLesson) return false;
+    const currentIndex = week.lessonList.findIndex(
+      (lesson) => lesson.id === currentLesson.lessonId
+    );
+    return currentIndex !== -1 && currentIndex < week.lessonList.length - 1;
   };
 
   if (loading) return <p className="text-center text-lg text-[#804000]">Loading...</p>;
@@ -265,7 +306,6 @@ const WeekDetail = () => {
                   </span>
                 </div>
 
-                {/* Improved Small Tab Chips */}
                 <div className="flex space-x-2 mb-6">
                   {(["beginner", "intermediate", "advanced"] as const).map((tab) => (
                     <button
@@ -284,7 +324,6 @@ const WeekDetail = () => {
                   ))}
                 </div>
 
-                {/* Accordions */}
                 <div className="space-y-4">
                   {questions[activeTab].length > 0 ? (
                     questions[activeTab].map((question) => (
@@ -324,6 +363,21 @@ const WeekDetail = () => {
                   )}
                 </div>
               </div>
+
+              {/* Next Button */}
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={goToNextLesson}
+                  disabled={!hasNextLesson()}
+                  className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ease-in-out ${
+                    hasNextLesson()
+                      ? "bg-[#804000] text-white hover:bg-[#663300] focus:ring-2 focus:ring-[#804000] focus:ring-opacity-50"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
+                >
+                  Next Lesson
+                </button>
+              </div>
             </div>
           ) : (
             <p className="text-xl text-[#666] text-center">
@@ -333,7 +387,6 @@ const WeekDetail = () => {
         </div>
       </main>
 
-      {/* Optional CSS for Animation */}
       <style jsx>{`
         @keyframes fadeIn {
           from {
