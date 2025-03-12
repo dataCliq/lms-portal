@@ -1,132 +1,82 @@
-'use client';
+"use client";
 
 import Link from "next/link";
-import 'font-awesome/css/font-awesome.min.css';
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
 
 interface Course {
-    _id: string,
-    title: string,
-    rating: Float32Array,
-    weekCount: Float32Array,
-    courseId: string,
-    slug: string,
-    imageSrc: string,
-    description: string,
-    tags: [string],
-    price: Float32Array,
-    createdAt: Date,
-    updatedAt: Date,
+  _id: string;
+  title: string;
+  rating: number;
+  weekCount: number;
+  courseId: string;
+  slug: string;
+  imageSrc: string;
+  description: string;
+  tags: string[];
+  price: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const CourseCard: React.FC = () => {
-    const [courses, setCourses] = useState<Course[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+interface CourseCardProps {
+  courses?: Course[];
+}
 
-    // Fetch courses from the API
-    useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const response = await fetch("/api/mongo-test");
-                const data = await response.json();
-
-                if (data.success) {
-                    setCourses(data.data);
-                } else {
-                    setError("Failed to fetch courses");
-                }
-            } catch (err) {
-                setError("Error fetching courses");
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchCourses();
-    }, []);
-
-    // Show a loading indicator while data is being fetched
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    // Handle errors if data fetch fails
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
-
-    // Render cards for each course
+const CourseCard: React.FC<CourseCardProps> = ({ courses = [] }) => {
+  if (!Array.isArray(courses) || courses.length === 0) {
     return (
-        <div className="flex justify-center">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8 place-items-center">
-                {courses.map((course) => (
-                    <div
-                        key={course._id}
-                        className="flex flex-col items-center relative"
-                    >
-                        {/* Image Section */}
-                        <div
-                            className="w-[330px] h-[200px] bg-cover bg-center relative bg-orange-200 rounded-2xl"
-                            style={{ backgroundImage: `url(${course.imageSrc})` }}
-                        >
-                            <div className="absolute top-3 left-3 bg-blue-600 text-white text-xs px-2 py-1 rounded-md">
-                                Featured
-                            </div>
-                        </div>
-
-                        {/* Rating Card and Chip Section */}
-                        <div className="absolute top-[220px] w-[330px] flex justify-between items-center px-4">
-                            <div className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">
-                                Self-paced
-                            </div>
-                            <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-md text-sm flex items-center shadow-md">
-                                ⭐ {course.rating}/5
-                            </div>
-                        </div>
-
-                        {/* Content Section */}
-                        <div className="w-[350px] h-[290px] rounded-2xl flex flex-col justify-between items-start p-4 border absolute top-[120px] -z-10"></div>
-
-                        {/* Text Section */}
-                        <div className="w-[350px] flex flex-col justify-center items-start p-4 rounded-2xl mt-12">
-                            <h2 className="w-[250px] text-[22px] pl-2 font-semibold text-gray-800 text-left whitespace-normal overflow-wrap break-words">
-                                {course.title}
-                            </h2>
-                            <div className="flex justify-between items-center w-full mt-4">
-                                <div className="flex items-center text-sm text-gray-600 px-3 py-1">
-                                <FontAwesomeIcon icon={faBook} className="text-2xl text-[#ffbd30] mr-2" />
-                                    {course.weekCount} Lessons
-                                </div>
-                                {/* <Link href={`/course/${encodeURIComponent(course.courseId)}`}>
-                                    <button
-                                        className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded hover:bg-blue-600"
-                                    >
-                                        Start Now
-                                    </button>
-                                </Link> */}
-
-                                <Link href={`/course/weeks?courseId=${course.courseId}`}>
-                                    <button className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded hover:bg-blue-600">
-                                        Start Now
-                                    </button>
-                                </Link>
-
-
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-
-
+      <div className="text-center py-12">
+        <p className="text-gray-500 text-lg">No courses available</p>
+      </div>
     );
+  }
 
+  return (
+    <>
+      {courses.map((course) => (
+        <div
+          key={course._id}
+          className="relative flex w-96 flex-col rounded-xl bg-white text-gray-700 shadow-md transition-all hover:shadow-lg min-h-[370px]"
+        >
+          <div
+            className="relative mx-4 -mt-6 h-48 rounded-xl bg-cover bg-center shadow-lg shadow-blue-gray-500/40 "
+            style={{ backgroundImage: `url(${course.imageSrc})` }}
+          >
+            <div className="absolute top-3 left-3 bg-[#0293A6] text-white text-xs font-medium px-2 py-1 rounded-md">
+              Featured
+            </div>
+          </div>
+
+          <div className="p-6 flex flex-col flex-grow">
+            <div className="flex justify-between items-center mb-4">
+              <div className="bg-gray-100 text-gray-800 text-xs font-medium px-2 py-1 rounded-full">
+                Self-paced
+              </div>
+              <div className="bg-[#10B981]/10 text-[#10B981] px-3 py-1 rounded-md text-sm font-medium flex items-center shadow-md">
+                ⭐ {course.rating}/5
+              </div>
+            </div>
+            <h5 className="mb-2 h-14 text-xl font-semibold leading-snug text-blue-gray-900 line-clamp-2">
+              {course.title}
+            </h5>
+            <div className="flex justify-between items-center mt-auto">
+              <div className="flex items-center text-sm text-gray-600">
+                <FontAwesomeIcon icon={faBook} className="text-xl text-[#0293A6] mr-2" />
+                {course.weekCount} Lessons
+              </div>
+              <Link href={`/course/weeks?courseId=${course.courseId}`}>
+                <button className="select-none h-[40px] w-[120px] rounded-lg bg-[#0293A6] py-2 px-4 text-center text-[15px] font-bold text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none">
+                  Start Now
+                </button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      ))}
+    </>
+  );
 };
 
 export default CourseCard;
-

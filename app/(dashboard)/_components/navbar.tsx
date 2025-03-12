@@ -63,7 +63,7 @@ const Navbar = () => {
               Sign In
             </a>
           </div>
-          <div className="bg-[#F4A500] px-[30px] py-[10px] rounded-full">
+          <div className="bg-[#10B981] text-white  font-bold px-[30px] py-[10px] rounded-full">
             <a href="#signup" className="cursor-pointer">
               Sign Up
             </a>

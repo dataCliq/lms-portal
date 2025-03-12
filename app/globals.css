@@ -257,26 +257,104 @@ h2{
   font-weight: 500;
 }
 
+/* Description list styling */
 .description ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
-.description li {
-  margin: 12px 0;
-  padding-left: 28px;
+/* Main list items */
+.description > ul > li {
+  margin: 16px 0; /* Increased spacing for clarity */
+  padding-left: 32px; /* More padding for hierarchy */
   position: relative;
-  color: #374151;
+  color: #374151; /* Dark gray for text */
+  line-height: 1.6; /* Better readability */
 }
 
-.description li:before {
-  content: ">>";
-  color: #61afef;
+/* Main bullet style */
+.description > ul > li:before {
+  content: ">>"; /* Keeping your original bullet */
+  color: #61afef; /* Bright blue for pop */
   position: absolute;
   left: 0;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 
+/* Nested (subpoint) list styling */
+.description ul ul {
+  margin-top: 8px;
+  margin-left: 20px; /* Indent subpoints */
+}
+
+/* Subpoint list items */
+.description ul ul li {
+  margin: 10px 0;
+  padding-left: 24px;
+  position: relative;
+  color: #4b5563; /* Lighter gray for subpoints */
+}
+
+/* Subpoint bullet style (replacing dash with circle) */
+.description ul ul li:before {
+  content: "•"; /* Small circle bullet */
+  color: #98c379; /* Soft green */
+  position: absolute;
+  left: 0;
+  font-size: 1.2rem; /* Slightly larger for visibility */
+  font-weight: normal;
+}
+
+/* Keyword styling */
+.keyword {
+  color: #e06c75; /* Vibrant red for keywords */
+  font-weight: bold;
+}
+
+/* Sleeker Table styling */
+.tool-comparison {
+  width: 100%;
+  border-collapse: separate; /* Changed for spacing */
+  border-spacing: 0; /* Clean edges */
+  margin: 25px 0;
+  background: #ffffff;
+  border-radius: 10px; /* Smoother corners */
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Deeper shadow */
+  font-size: 0.95rem; /* Slightly smaller for sleekness */
+}
+
+.tool-comparison th,
+.tool-comparison td {
+  padding: 14px 18px; /* More padding for comfort */
+  text-align: left;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tool-comparison th {
+  background: linear-gradient(135deg, #61afef, #4b9cd3); /* Gradient header */
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px; /* Slight spacing for elegance */
+  border-bottom: 2px solid #3b82f6; /* Accent line */
+}
+
+.tool-comparison td {
+  background: #ffffff;
+  transition: background 0.3s ease; /* Smooth hover */
+}
+
+.tool-comparison tr:nth-child(even) td {
+  background: #f8fafc; /* Subtle alternating color */
+}
+
+.tool-comparison tr:hover td {
+  background: #e6f0fa; /* Soft blue hover */
+}
 /* Example Section */
 .example h3 {
   font-size: 1.5rem;

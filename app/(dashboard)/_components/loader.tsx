@@ -15,15 +15,15 @@ const Loader: React.FC<LoaderProps> = ({ isLoading = true, message = "Loading Da
     <div className="flex flex-col items-center justify-center w-full h-full min-h-screen">
       <div className="relative w-[200px] h-[100px] flex justify-between items-end"> {/* Increased width from 200px to 300px */}
         {/* Bar 1 */}
-        <div className="w-[30px] bg-[#ffbd30] animate-[grow-shrink_1.5s_ease-in-out_infinite] rounded-t"></div>
+        <div className="w-[30px] bg-[#0F172A] animate-[grow-shrink_1.5s_ease-in-out_infinite] rounded-t"></div>
         {/* Bar 2 */}
-        <div className="w-[30px] bg-[#ffbd30] animate-[grow-shrink_1.5s_ease-in-out_0.2s_infinite] rounded-t"></div>
+        <div className="w-[30px] bg-[#00A3B5] animate-[grow-shrink_1.5s_ease-in-out_0.2s_infinite] rounded-t"></div>
         {/* Bar 3 */}
-        <div className="w-[30px] bg-[#ffbd30] animate-[grow-shrink_1.5s_ease-in-out_0.4s_infinite] rounded-t"></div>
+        <div className="w-[30px] bg-[#30B9A5] animate-[grow-shrink_1.5s_ease-in-out_0.4s_infinite] rounded-t"></div>
         {/* Bar 4 */}
-        <div className="w-[30px] bg-[#ffbd30] animate-[grow-shrink_1.5s_ease-in-out_0.6s_infinite] rounded-t"></div>
+        <div className="w-[30px] bg-[#68D391] animate-[grow-shrink_1.5s_ease-in-out_0.6s_infinite] rounded-t"></div>
       </div>
-      <p className="mt-4 text-sm text-[#804000] font-medium">{message}</p>
+      <p className="mt-4 text-sm text-[#00A3B5] font-medium">{message}</p>
     </div>
   );
 };
