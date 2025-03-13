@@ -56,24 +56,24 @@ const HeroSection = () => {
           className="flex flex-col sm:flex-row gap-4 justify-center mt-8"
         >
           {/* Filled Button */}
-          <div class="flex justify-center gap-4">
+          <div className="flex justify-center gap-4">
   <button
     type="submit"
-    class="inline-flex items-center shadow-xl text-lg bg-[#10B981] backdrop-blur-md lg:font-semibold border-gray-50 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-[#0FA070] hover:text-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-4 py-2 overflow-hidden border-2 rounded-full group transition-all duration-300 ease-in-out"
+    className="inline-flex items-center shadow-xl text-lg bg-[#10B981] backdrop-blur-md lg:font-semibold border-gray-50 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-[#0FA070] hover:text-white before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-4 py-2 overflow-hidden border-2 rounded-full group transition-all duration-300 ease-in-out"
   >
-    <span class="relative z-10">Explore Courses</span>
+    <span className="relative z-10">Explore Courses</span>
     <span
-      class="ml-0 opacity-0 translate-x-2 group-hover:ml-2 group-hover:opacity-100 group-hover:translate-x-0 ease-in-out duration-300 text-gray-800 group-hover:text-teal-800"
+      className="ml-0 opacity-0 translate-x-2 group-hover:ml-2 group-hover:opacity-100 group-hover:translate-x-0 ease-in-out duration-300 text-gray-800 group-hover:text-teal-800"
     >&gt;</span>
   </button>
 
   <button
     type="button"
-    class="inline-flex items-center shadow-xl text-lg backdrop-blur-md lg:font-semibold border-[#10B981] text-[#10B981] hover:text-white before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-[#0FA070] before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-4 py-2 overflow-hidden border-2 rounded-full group transition-all duration-300 ease-in-out"
+    className="inline-flex items-center shadow-xl text-lg backdrop-blur-md lg:font-semibold border-[#10B981] text-[#10B981] hover:text-white before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-[#0FA070] before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-4 py-2 overflow-hidden border-2 rounded-full group transition-all duration-300 ease-in-out"
   >
-    <span class="relative z-10">Download Cheatsheet</span>
+    <span className="relative z-10">Download Cheatsheet</span>
     <span
-      class="ml-0 opacity-0 translate-x-2 group-hover:ml-2 group-hover:opacity-100 group-hover:translate-x-0 ease-in-out duration-300 text-teal-500 group-hover:text-teal-800"
+      className="ml-0 opacity-0 translate-x-2 group-hover:ml-2 group-hover:opacity-100 group-hover:translate-x-0 ease-in-out duration-300 text-teal-500 group-hover:text-teal-800"
     >&gt;</span>
   </button>
 </div>
