@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import HeroSection from "./HeroSection";
 import CardSection from "./CardSection";
 import CourseCard from "../../_components/CourseCard";
+import Bootcamp from "../../_components/Bootcamp";
 
 interface Course {
   _id: string;
@@ -31,7 +32,6 @@ const HomePage = () => {
         const response = await fetch("/api/mongo-test");
         const data = await response.json();
         if (data.success) {
-          // Optionally limit the number of courses for the homepage
           setCourses(data.data.slice(0, 3)); // Show only 3 courses
         } else {
           setError("Failed to fetch courses");
@@ -80,6 +80,10 @@ const HomePage = () => {
         )}
       </div>
 
+      {/* Bootcamp Section - Ensure Centering */}
+      <div className="w-full py-8 flex justify-center">
+        <Bootcamp />
+      </div>
       <div className="w-full py-20" />
     </div>
   );

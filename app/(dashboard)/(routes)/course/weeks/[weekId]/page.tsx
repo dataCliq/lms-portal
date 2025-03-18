@@ -267,27 +267,31 @@ const WeekDetail = () => {
 
   return (
     <div className="min-h-screen flex bg-white">
-      <nav className="w-64 bg-white shadow-[0px_0px_15px_rgba(0,0,0,0.05)] border-r border-[#f5f5f5] h-screen fixed top-16 left-0 overflow-y-auto z-10">
-        <div className="p-4 border-b border-[#f5f5f5] text-[#170F00]">
-          <h2 className="text-lg font-bold">Week {week.weekId} Lessons</h2>
-        </div>
-        <ul className="p-2 space-y-2">
-          {week.lessonList && week.lessonList.length > 0 ? (
-            week.lessonList.map((lesson) => (
-              <li key={lesson.id} className="hover:bg-[#f5f5f5] transition duration-200">
-                <button
-                  onClick={() => fetchLessonContent(lesson.id)}
-                  className="w-full text-left px-3 py-2 text-sm text-[#666] hover:text-[#804000] rounded-md hover:bg-[#f5f5f5] transition duration-200 ease-in-out"
-                >
-                  {lesson.title}
-                </button>
-              </li>
-            ))
-          ) : (
-            <li className="text-[#666] px-4 py-2 text-sm">No lessons available</li>
-          )}
-        </ul>
-      </nav>
+      <nav className="w-64 bg-white border-r border-[#359D9E]/10 h-screen fixed top-16 left-0 overflow-y-auto z-10">
+  <div className="p-5 border-b border-[#359D9E]/20">
+    <h2 className="text-lg font-medium text-[#215273]">
+      Week {week.weekId} Lessons
+    </h2>
+  </div>
+  <ul className="p-4 space-y-3">
+    {week.lessonList && week.lessonList.length > 0 ? (
+      week.lessonList.map((lesson) => (
+        <li key={lesson.id}>
+          <button
+            onClick={() => fetchLessonContent(lesson.id)}
+            className="w-full text-left px-3 py-2 text-sm text-[#215273] hover:text-[#00A3B5] hover:bg-[#359D9E]/10 rounded-md transition duration-200 ease-in-out"
+          >
+            {lesson.title}
+          </button>
+        </li>
+      ))
+    ) : (
+      <li className="text-[#215273]/70 px-3 py-2 text-sm">
+        No lessons available
+      </li>
+    )}
+  </ul>
+</nav>
 
       <main className="flex-1 ml-64 pt-16 p-8 overflow-y-auto">
         <div className="lesson-content" ref={contentRef}>

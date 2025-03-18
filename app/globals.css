@@ -171,15 +171,14 @@ h2{
 /* General Container */
 .lesson-container {
   width: 100%;
-  margin: 0 auto;
-  padding: 32px;
+  margin: 0;
+  padding: 0; /* Remove padding here, delegate to content-wrapper */
   font-family: 'Fira Code', 'Inter', monospace;
   line-height: 1.65;
   color: #2d2d2d;
   background: #ffffff;
-  max-width: 800px;
+  max-width: none; /* Remove max-width constraint for full-width header */
 }
-
 /* Scale max-width for larger screens */
 @media (min-width: 1024px) {
   .lesson-container {
@@ -199,13 +198,23 @@ h2{
   }
 }
 
-/* Title and Duration */
+/* Main Wrapper */
+.main-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header */
+.header {
+  text-align: left;
+  margin-bottom: 40px;
+}
+
 .title {
-  font-size: 2.75rem;
-  font-weight: 600;
+  font-size: 2.5rem;
+  font-weight: 700;
   color: #1a1a1a;
-  margin-bottom: 12px;
-  letter-spacing: -0.02em;
 }
 
 .read-duration {
@@ -231,7 +240,7 @@ h2{
   padding: 12px 16px;
   background: #f7f7f7;
   border-left: 4px solid #98c379;
-  font-style: normal;
+  font-style: italic;
   border-radius: 4px;
 }
 
@@ -250,19 +259,17 @@ h2{
 }
 
 /* Description */
-.description h3 {
-  font-size: 1.5rem;
+.description h3, .example h3, .video-box h3, .accordion-section h3 {
+  font-size: 1.25rem; /* Smaller headings */
   color: #1a1a1a;
-  margin: 32px 0 16px;
-  font-weight: 500;
+  margin: 24px 0 12px; /* Reduced spacing */
+  font-weight: 700;
+}
+.description ul li, .example p, .accordion-content li {
+  color: #374151;
+  margin: 8px 0; /* Reduced spacing */
 }
 
-/* Description list styling */
-.description ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
 
 /* Main list items */
 .description > ul > li {
@@ -357,10 +364,9 @@ h2{
 }
 /* Example Section */
 .example h3 {
-  font-size: 1.5rem;
   color: #1a1a1a;
   margin: 32px 0 16px;
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .example p {
@@ -398,17 +404,17 @@ h2{
 
 /* Language tag */
 .code-snippet-box .code-header::before {
-  content: 'JS'; /* Default, can be overridden with data-lang attribute */
+  content: 'SQL'; /* Default, can be overridden with data-lang attribute */
   font-size: 0.75rem;
   color: #fff;
-  background: #61afef; /* Blue from functions */
+  background: #55C595; /* Blue from functions */
   padding: 2px 6px;
   border-radius: 4px;
   text-transform: uppercase;
 }
 
 .code-snippet-box code {
-  font-family: 'Fira Code', 'Courier New', monospace;
+  font-family: 'Inter', monospace;
   font-size: 0.9rem;
   color: #1f2937; /* Darker gray for light background */
   display: block;
@@ -425,11 +431,10 @@ h2{
 .code-snippet-box code .number { color: #d97706; /* Darker orange */ }
 
 /* Video Box */
-.video-box h3 {
-  font-size: 1.5rem;
+.video-box {
   color: #1a1a1a;
   margin: 32px 0 16px;
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .video-wrapper {
@@ -453,8 +458,64 @@ h2{
   background: #f0f0f0;
 }
 
+/* Fixed Bottom Bar */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  padding: 10px 32px;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* Shadow at top */
+  display: flex;
+  justify-content: flex-end;
+  z-index: 10;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.nav-button {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  color: #ffffff;
+  background: #4b5e40; /* Match clock-icon color */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.nav-button:hover {
+  background: #98c379; /* Lighter green on hover */
+}
+
+.back-button {
+  background: #6b7280; /* Gray for Back button */
+}
+
+.back-button:hover {
+  background: #9ca3af;
+}
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .header {
+    padding: 15px 20px;
+  }
+  .title {
+    font-size: 2rem;
+  }
+  .content-wrapper {
+    padding: 20px;
+  }
+  .bottom-bar {
+    padding: 10px 20px;
+  }
+}
+
 /* Redesigned Accordion Section */
-.accordion-section h3 {
+.accordion-section{
   font-size: 1.5rem;
   color: #1a1a1a;
   margin: 32px 0 16px;
@@ -634,3 +695,4 @@ details[open] .accordion-content {
   margin-top: 0.25rem;
   margin-bottom: 0.5rem;
 }
+
