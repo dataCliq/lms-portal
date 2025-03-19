@@ -67,7 +67,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses = [] }) => {
                 {course.weekCount} Lessons
               </div>
               <Link href={`/course/weeks?courseId=${course.courseId}`}>
-                <button className="select-none h-[40px] w-[120px] rounded-lg bg-[#0293A6] py-2 px-4 text-center text-[15px] font-bold text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none">
+                <button className="select-none h-[40px] w-[120px] rounded-full bg-[#0293A6] py-2 px-4 text-center text-[15px] font-bold text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none">
                   Start Now
                 </button>
               </Link>

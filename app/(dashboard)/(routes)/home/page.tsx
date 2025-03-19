@@ -5,6 +5,7 @@ import HeroSection from "./HeroSection";
 import CardSection from "./CardSection";
 import CourseCard from "../../_components/CourseCard";
 import Bootcamp from "../../_components/Bootcamp";
+import LearningSteps from "../../_components/learningStep";
 
 interface Course {
   _id: string;
@@ -79,6 +80,12 @@ const HomePage = () => {
           </div>
         )}
       </div>
+
+      <div className="w-full">
+      {/* Other homepage content */}
+      <LearningSteps />
+      {/* Other homepage content */}
+    </div>
 
       {/* Bootcamp Section - Ensure Centering */}
       <div className="w-full py-8 flex justify-center">
