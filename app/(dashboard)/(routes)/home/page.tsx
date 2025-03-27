@@ -2,10 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import HeroSection from "./HeroSection";
-import CardSection from "./CardSection";
+import Features from "./Features"
+import CoreOfferingsSection from "./CardSection"; // Updated import name
 import CourseCard from "../../_components/CourseCard";
 import Bootcamp from "../../_components/Bootcamp";
 import LearningSteps from "../../_components/learningStep";
+import SkillsSection from "./Skills";
+import CardSection from "./CardSection";
 
 interface Course {
   _id: string;
@@ -48,19 +51,24 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen bg-cover bg-center">
+    <div className="flex flex-col items-center justify-start min-h-screen">
       {/* Hero Section */}
       <div className="w-full pt-10">
         <HeroSection />
       </div>
 
+      {/* Tools Section */}
+      <div className="w-full">
+        <SkillsSection />
+      </div>
+
       {/* Add Controlled Gap */}
       <div className="w-full" />
 
-      {/* Card Section */}
+      {/* Core Offerings Section */}
       <div className="w-full">
-        <CardSection />
-      </div>
+  <CardSection />
+</div>
 
       {/* Add Another Controlled Gap */}
       <div className="w-full py-8" />
@@ -82,10 +90,13 @@ const HomePage = () => {
       </div>
 
       <div className="w-full">
-      {/* Other homepage content */}
-      <LearningSteps />
-      {/* Other homepage content */}
-    </div>
+        {/* Other homepage content */}
+        <LearningSteps />
+        {/* Other homepage content */}
+      </div>
+      <div className="w-full">
+        <Features />
+      </div>
 
       {/* Bootcamp Section - Ensure Centering */}
       <div className="w-full py-8 flex justify-center">

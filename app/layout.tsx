@@ -16,8 +16,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`${poppins.className} flex flex-col min-h-screen bg-white`}> {/* Changed to plain white bg, removed bg-cover, added flex-col for full height */}
-          {children} {/* Render children of each page */}
+        <body className={`${poppins.className} flex flex-col min-h-screen`}>
+          {children}
         </body>
       </html>
     </ClerkProvider>

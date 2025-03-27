@@ -1,32 +1,25 @@
 "use client";
 
-import Navbar from "./_components/navbar"; // Ensure Navbar exists in this location
-import { usePathname } from "next/navigation"; // Import usePathname hook from Next.js
+import Navbar from "./_components/navbar";
+import { usePathname } from "next/navigation";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname(); // Get the current path
+  const pathname = usePathname();
 
-  // Ensure HomePage renders only when at '/' or '/home'
   return (
-    <div
-      className="flex flex-col items-center w-full min-h-screen" // Removed bg-cover, bg-center, bg-no-repeat, and backgroundImage
-    >
+    <div className="flex flex-col items-center w-full min-h-screen">
       <Navbar />
-      {/* Render HomePage only on the root (/) or /home routes */}
-      {(pathname === "/" || pathname === "/home") && (
+      {pathname === "/" || pathname === "/home" ? (
         <div
-          className="flex flex-col items-center justify-center w-full h-full bg-cover bg-center bg-no-repeat"
+          className="flex flex-col items-center justify-center w-full min-h-screen bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url('/background.svg')", // Background image only for homepage
+            backgroundImage: "url('/background.svg')",
           }}
         >
           {children}
         </div>
-      )}
-
-      {/* Render dynamic children (e.g., course pages) with plain white background */}
-      {(pathname !== "/" && pathname !== "/home") && (
-        <div className="w-full bg-white p-6"> {/* Plain white background for non-homepage pages */}
+      ) : (
+        <div className="w-full bg-white p-6 min-h-screen">
           {children}
         </div>
       )}
