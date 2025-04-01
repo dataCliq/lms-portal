@@ -88,12 +88,7 @@ const HomePage = () => {
           </div>
         )}
       </div>
-
-      <div className="w-full">
-        {/* Other homepage content */}
-        <LearningSteps />
-        {/* Other homepage content */}
-      </div>
+      <div className="w-full py-20" />
       <div className="w-full">
         <Features />
       </div>
@@ -103,6 +98,7 @@ const HomePage = () => {
         <Bootcamp />
       </div>
       <div className="w-full py-20" />
+      
     </div>
   );
 };

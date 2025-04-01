@@ -1,4 +1,6 @@
 // components/ToolsSection.tsx
+import { useState, useEffect } from 'react';
+
 const tools = [
   { name: "Excel", logo: "/logo-skills/excel.svg" },
   { name: "Power BI", logo: "/logo-skills/power-bi.svg" },
@@ -14,6 +16,20 @@ const tools = [
 ];
 
 const SkillsSection = () => {
+  const [startIndex, setStartIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStartIndex((prev) => (prev + 5) % tools.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const visibleTools = [];
+  for (let i = 0; i < 5; i++) {
+    visibleTools.push(tools[(startIndex + i) % tools.length]);
+  }
+
   return (
     <div className="w-full py-12 bg-white flex flex-col items-center">
       {/* Heading */}
@@ -26,18 +42,58 @@ const SkillsSection = () => {
         From freshers to working professionals, DataCliq empowers everyone to excel in data analysis.
       </p>
 
-      {/* Tools Grid */}
-      <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-6 md:gap-8 place-items-center justify-center">
-        {tools.map((tool, index) => (
-          <div key={index} className="flex justify-center p-4 group">
-            <img
-              src={tool.logo}
-              alt={tool.name}
-              className="h-12 w-auto object-contain block mx-auto transition-all duration-300 group-hover:filter group-hover:hue-rotate-90 group-hover:brightness-110"
-            />
-          </div>
-        ))}
+      {/* Tools Carousel */}
+      <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="relative h-32 grid grid-cols-5 gap-6 md:gap-8"> {/* Increased height from h-20 to h-32 */}
+          {visibleTools.map((tool, index) => (
+            <div 
+              key={index} 
+              className="relative flex w-full flex-col items-center justify-center"
+            >
+              <div 
+                className="absolute left-0 top-0 flex h-full w-full items-center justify-center transition-logo ease-primary duration-long animate-logo-swipe"
+                style={{ animationDelay: `${index * 120}ms` }}
+              >
+                <img
+                  src={tool.logo}
+                  alt={tool.name}
+                  className="h-10 w-auto object-contain transition-all duration-300 group-hover:filter group-hover:hue-rotate-90 group-hover:brightness-110"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
+
+      {/* CSS Animation */}
+      <style jsx>{`
+        @keyframes logoSwipe {
+          0% {
+            transform: translateY(4rem); /* Increased from 2.5rem */
+            opacity: 0;
+          }
+          33% {
+            transform: translateY(0);
+            opacity: 1;
+          }
+          66% {
+            transform: translateY(0);
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(-4rem); /* Increased from -2.5rem */
+            opacity: 0;
+          }
+        }
+
+        .animate-logo-swipe {
+          animation: logoSwipe 3s infinite;
+        }
+
+        .transition-logo {
+          transition: all 0.6s ease;
+        }
+      `}</style>
     </div>
   );
 };
