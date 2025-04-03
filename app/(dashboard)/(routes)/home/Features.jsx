@@ -5,14 +5,15 @@ import {
   Bar,
   BarChart,
   Cell,
-  Line,
-  LineChart,
   Pie,
   PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
+  Legend,
+  RadialBarChart,
+  RadialBar,
 } from "recharts"
 import {
   Chart as ChartJS,
@@ -22,11 +23,11 @@ import {
   LineElement,
   Title,
   Tooltip as ChartTooltip,
-  Legend,
+  Legend as ChartLegend,
 } from "chart.js"
 
 // Register Chart.js components
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, ChartTooltip, Legend)
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, ChartTooltip, ChartLegend)
 
 const Features = () => {
   const [activeTab, setActiveTab] = useState("skills")
@@ -100,19 +101,12 @@ const Features = () => {
   ]
 
   // Data for the Proline dashboard
-  const bootcampSuccessData = [
-    { month: "Jan", rate: 68 },
-    { month: "Feb", rate: 72 },
-    { month: "Mar", rate: 75 },
-    { month: "Apr", rate: 78 },
-    { month: "May", rate: 82 },
-    { month: "Jun", rate: 85 },
-    { month: "Jul", rate: 88 },
-    { month: "Aug", rate: 86 },
-    { month: "Sep", rate: 89 },
-    { month: "Oct", rate: 91 },
-    { month: "Nov", rate: 92 },
-    { month: "Dec", rate: 94 },
+  // Single bootcamp success metrics - without placement rate
+  const bootcampMetrics = [
+    { name: "Skill Mastery", value: 92, fill: "#10B981" },
+    { name: "Satisfaction", value: 95, fill: "#F59E0B" },
+    { name: "Project Completion", value: 88, fill: "#3B82F6" },
+    { name: "Interactivity", value: 94, fill: "#6366F1" },
   ]
 
   const toolsData = [
@@ -155,7 +149,7 @@ const Features = () => {
                 {/* Right: Inspire Dashboard */}
                 <div className="lg:w-1/2 relative">
                   <div className="bg-[#38343F] transform rounded-xl p-6 relative overflow-hidden left-[4.7rem]">
-                    <div className="dashboard-container w-full h-[450px] rounded-xl bg-white flex flex-col overflow-hidden">
+                    <div className="dashboard-container w-full h-[480px] rounded-xl bg-white flex flex-col overflow-hidden">
                       {/* Dashboard Header */}
                       <div className="bg-blue-600 text-white p-4 flex justify-between items-center">
                         <div className="flex items-center gap-2">
@@ -170,7 +164,7 @@ const Features = () => {
                       </div>
 
                       {/* Dashboard Content */}
-                      <div className="flex-1 p-4 grid grid-cols-1 md:grid-cols-2 gap-4 overflow-auto">
+                      <div className="flex-1 p-4 grid grid-cols-1 md:grid-cols-2 gap-6 overflow-auto">
                         {/* Salary Comparison Card */}
                         <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
                           <div className="p-4 pb-2">
@@ -178,7 +172,7 @@ const Features = () => {
                             <p className="text-xs text-gray-500">Annual salary in USD</p>
                           </div>
                           <div className="p-4 pt-0">
-                            <div className="h-[160px]">
+                            <div className="h-[220px]">
                               <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={salaryComparisonData} layout="vertical">
                                   <XAxis type="number" hide />
@@ -225,7 +219,7 @@ const Features = () => {
                             <p className="text-xs text-gray-500">Previous professional backgrounds</p>
                           </div>
                           <div className="p-4 pt-0">
-                            <div className="h-[170px] flex items-center justify-center">
+                            <div className="h-[180px] flex items-center justify-center">
                               <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                   <Pie
@@ -233,7 +227,7 @@ const Features = () => {
                                     cx="50%"
                                     cy="50%"
                                     innerRadius={40}
-                                    outerRadius={70}
+                                    outerRadius={80}
                                     paddingAngle={2}
                                     dataKey="value"
                                   >
@@ -242,7 +236,7 @@ const Features = () => {
                                     ))}
                                   </Pie>
                                   <Tooltip
-                                    formatter={(value) => [`${value}%`, "Transition Percentage"]}
+                                    formatter={(value) => [`${value}%`, "Percentage"]}
                                     contentStyle={{
                                       backgroundColor: "#fff",
                                       border: "1px solid #e2e8f0",
@@ -252,11 +246,11 @@ const Features = () => {
                                 </PieChart>
                               </ResponsiveContainer>
                             </div>
-                            <div className="mt-2 grid grid-cols-2 gap-2">
+                            <div className="mt-2 grid grid-cols-3 gap-x-2 gap-y-1">
                               {careerTransitionData.map((item, index) => (
-                                <div key={index} className="flex items-center gap-2 text-xs">
+                                <div key={index} className="flex items-center gap-1 text-xs">
                                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }}></div>
-                                  <span>
+                                  <span className="whitespace-nowrap overflow-hidden text-ellipsis">
                                     {item.name}: {item.value}%
                                   </span>
                                 </div>
@@ -302,7 +296,7 @@ const Features = () => {
                 {/* Left: Proline Dashboard */}
                 <div className="lg:w-1/2 mb-8 lg:mb-0">
                   <div className="bg-gradient-to-r from-[#0F172A] via-[#00A3B5] to-[#68D391] transform rounded-xl p-6 relative overflow-hidden right-[4.7rem]">
-                    <div className="dashboard-container w-full h-[450px] rounded-xl bg-white flex flex-col overflow-hidden">
+                    <div className="dashboard-container w-full h-[480px] rounded-xl bg-white flex flex-col overflow-hidden">
                       {/* Dashboard Header */}
                       <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 flex justify-between items-center">
                         <div className="flex items-center gap-2">
@@ -328,7 +322,7 @@ const Features = () => {
                       </div>
 
                       {/* Dashboard Content */}
-                      <div className="flex-1 p-4 grid grid-cols-1 md:grid-cols-2 gap-4 overflow-auto">
+                      <div className="flex-1 p-4 grid grid-cols-1 md:grid-cols-2 gap-6 overflow-auto">
                         {/* Tools Usage Card */}
                         <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
                           <div className="p-4 pb-2">
@@ -336,9 +330,9 @@ const Features = () => {
                             <p className="text-xs text-gray-500">% of job listings requiring these tools</p>
                           </div>
                           <div className="p-4 pt-0">
-                            <div className="space-y-3 mt-2">
+                            <div className="space-y-4 mt-2">
                               {toolsData.map((tool, index) => (
-                                <div key={index} className="space-y-1">
+                                <div key={index} className="space-y-0">
                                   <div className="flex justify-between text-sm">
                                     <span>{tool.name}</span>
                                     <span className="font-semibold">{tool.usage}%</span>
@@ -363,48 +357,53 @@ const Features = () => {
                           </div>
                         </div>
 
-                        {/* Bootcamp Success Card */}
+                        {/* Bootcamp Success Card - REPLACED with Radial Chart for single bootcamp */}
                         <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
                           <div className="p-4 pb-2">
-                            <h4 className="text-base font-semibold">Bootcamp Success Rate</h4>
-                            <p className="text-xs text-gray-500">Monthly placement rate for graduates</p>
+                            <h4 className="text-base font-semibold">First Bootcamp Metrics</h4>
+                            <p className="text-xs text-gray-500">Performance data from our first cohort</p>
                           </div>
                           <div className="p-4 pt-0">
-                            <div className="h-[180px]">
+                            <div className="h-[220px]">
                               <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={bootcampSuccessData}>
-                                  <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10 }} />
-                                  <YAxis
-                                    axisLine={false}
-                                    tickLine={false}
-                                    domain={[60, 100]}
-                                    tick={{ fontSize: 10 }}
-                                    tickFormatter={(value) => `${value}%`}
+                                <RadialBarChart
+                                  cx="50%"
+                                  cy="50%"
+                                  innerRadius="25%"
+                                  outerRadius="90%"
+                                  data={bootcampMetrics}
+                                  startAngle={180}
+                                  endAngle={0}
+                                >
+                                  <RadialBar
+                                    minAngle={15}
+                                    background
+                                    clockWise={true}
+                                    dataKey="value"
+                                    cornerRadius={10}
                                   />
                                   <Tooltip
-                                    formatter={(value) => [`${value}%`, "Success Rate"]}
+                                    formatter={(value) => [`${value}%`, "Score"]}
                                     contentStyle={{
                                       backgroundColor: "#fff",
                                       border: "1px solid #e2e8f0",
                                       borderRadius: "0.375rem",
                                     }}
                                   />
-                                  <Line
-                                    type="monotone"
-                                    dataKey="rate"
-                                    stroke="#6366F1"
-                                    strokeWidth={2}
-                                    dot={{ r: 3, fill: "#6366F1" }}
-                                    activeDot={{ r: 5 }}
+                                  <Legend
+                                    iconSize={10}
+                                    layout="horizontal"
+                                    verticalAlign="bottom"
+                                    wrapperStyle={{ fontSize: "11px", paddingTop: "10px" }}
                                   />
-                                </LineChart>
+                                </RadialBarChart>
                               </ResponsiveContainer>
                             </div>
-                            <div className="mt-2 text-center">
+                            <div className="mt-1 text-center">
                               <div className="text-sm font-medium">
-                                Current Success Rate: <span className="text-green-600">94%</span>
+                                Overall Success: <span className="text-green-600">90%</span>
                               </div>
-                              <div className="text-xs text-gray-500">26% increase over the year</div>
+                              <div className="text-xs text-gray-500">First cohort completed Jan 2025</div>
                             </div>
                           </div>
                         </div>
@@ -412,7 +411,7 @@ const Features = () => {
 
                       {/* Dashboard Footer */}
                       <div className="p-3 border-t flex justify-between items-center bg-gray-50">
-                        <div className="text-xs text-gray-500">Based on 5,000+ graduates</div>
+                        <div className="text-xs text-gray-500">Based on our first cohort's performance</div>
                         <button className="text-xs flex items-center gap-1 text-indigo-600 hover:text-indigo-700">
                           <span>Enroll Now</span>
                           <svg
