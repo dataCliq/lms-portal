@@ -1,79 +1,151 @@
-export async function fetchCourses(): Promise<any[]> {
-    try {
-      const response = await fetch("/api/mongo-test");
-      if (!response.ok) throw new Error("Failed to fetch courses");
-      const result = await response.json();
-      return Array.isArray(result.data) ? result.data : [];
-    } catch (error) {
-      console.error("Error fetching courses:", error);
-      return [];
-    }
+export async function fetchCourses() {
+  const response = await fetch("/api/courses", { method: "GET" });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Failed to fetch courses: ${response.status} - ${text || response.statusText}`);
   }
-  
-  export async function fetchWeeks(courseId: string): Promise<any> {
-    try {
-      const response = await fetch(`/api/course-week?courseId=${courseId}`);
-      if (!response.ok) throw new Error("Failed to fetch weeks");
-      return await response.json();
-    } catch (error) {
-      console.error("Error fetching weeks:", error);
-      return { data: [] };
-    }
+  const data = await response.json();
+  if (!data.success) {
+    throw new Error(data.message || "Failed to fetch courses");
   }
-  
-  export async function fetchLesson(courseId: string, weekId: string | number, lessonId: string) {
-    try {
-      const response = await fetch(`/api/lesson-content?courseId=${courseId}&weekId=${weekId}&lessonId=${lessonId}`);
-      if (!response.ok) throw new Error("Failed to fetch lesson");
-      return await response.json();
-    } catch (error) {
-      console.error("Error fetching lesson:", error);
-      throw error;
-    }
+  return data;
+}
+
+export async function createCourse(data: {
+  courseId: string;
+  title: string;
+  slug: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}) {
+  const response = await fetch("/api/courses", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Failed to create course: ${response.status} - ${text || response.statusText}`);
   }
-  
-  export async function saveLesson(lessonData: any) {
-    try {
-      const response = await fetch("/api/lesson-content", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(lessonData),
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || "Failed to save lesson");
-      return result;
-    } catch (error) {
-      console.error("Error saving lesson:", error);
-      throw error;
-    }
+  const result = await response.json();
+  if (!result.success) {
+    throw new Error(result.message || "Failed to create course");
   }
-  
-  export async function updateLesson(lessonData: any) {
-    try {
-      const response = await fetch("/api/lesson-content", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(lessonData),
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || "Failed to update lesson");
-      return result;
-    } catch (error) {
-      console.error("Error updating lesson:", error);
-      throw error;
-    }
+  return result;
+}
+
+export async function updateCourse(
+  courseId: string,
+  data: {
+    title: string;
+    slug: string;
+    description?: string;
+    updatedAt: string;
   }
-  
-  export async function deleteLesson(courseId: string, weekId: string | number, lessonId: string) {
-    try {
-      const response = await fetch(`/api/lesson-content?courseId=${courseId}&weekId=${weekId}&lessonId=${lessonId}`, {
-        method: "DELETE",
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || "Failed to delete lesson");
-      return result;
-    } catch (error) {
-      console.error("Error deleting lesson:", error);
-      throw error;
-    }
+) {
+  const response = await fetch(`/api/courses?courseId=${encodeURIComponent(courseId)}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Failed to update course: ${response.status} - ${text || response.statusText}`);
   }
+  const result = await response.json();
+  if (!result.success) {
+    throw new Error(result.message || "Failed to update course");
+  }
+  return result;
+}
+
+export async function deleteCourse(courseId: string) {
+  const response = await fetch(`/api/courses?courseId=${encodeURIComponent(courseId)}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Failed to delete course: ${response.status} - ${text || response.statusText}`);
+  }
+  const result = await response.json();
+  if (!result.success) {
+    throw new Error(result.message || "Failed to delete course");
+  }
+  return result;
+}
+
+export async function fetchWeeks() {
+  const response = await fetch("/api/course-week", { method: "GET" });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Failed to fetch weeks: ${response.status} - ${text || response.statusText}`);
+  }
+  const data = await response.json();
+  if (!data.success) {
+    throw new Error(data.message || "Failed to fetch weeks");
+  }
+  return data;
+}
+
+export async function createWeek(data: {
+  courseId: string;
+  weekId: number;
+  slug: string;
+  title: string;
+  lessonCount: number;
+  createdAt: string;
+  updatedAt: string;
+}) {
+  const response = await fetch("/api/course-week", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Failed to create week: ${response.status} - ${text || response.statusText}`);
+  }
+  const result = await response.json();
+  if (!result.success) {
+    throw new Error(result.message || "Failed to create week");
+  }
+  return result;
+}
+
+export async function updateWeek(courseId: string, weekId: string, data: {
+  title: string;
+  slug: string;
+  lessonCount: number;
+  updatedAt: string;
+}) {
+  const response = await fetch(`/api/course-week?courseId=${encodeURIComponent(courseId)}&weekId=${encodeURIComponent(weekId)}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Failed to update week: ${response.status} - ${text || response.statusText}`);
+  }
+  const result = await response.json();
+  if (!result.success) {
+    throw new Error(result.message || "Failed to update week");
+  }
+  return result;
+}
+
+export async function deleteWeek(courseId: string, weekId: string) {
+  const response = await fetch(`/api/course-week?courseId=${encodeURIComponent(courseId)}&weekId=${encodeURIComponent(weekId)}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Failed to delete week: ${response.status} - ${text || response.statusText}`);
+  }
+  const result = await response.json();
+  if (!result.success) {
+    throw new Error(result.message || "Failed to delete week");
+  }
+  return result;
+}
