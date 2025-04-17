@@ -94,7 +94,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } catch (error) {
     console.error("Error in /api/courses:", error);
-    res.status(500).json({ success: false, message: `Internal server error: ${error.message}` });
+    res.status(500).json({ success: false, message: `Internal server error` });
   } finally {
     if (mongoose.connection.readyState === 1) {
       await mongoose.connection.close();

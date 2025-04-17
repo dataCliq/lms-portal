@@ -1,61 +1,123 @@
-import mongoose from "mongoose"
-import { connectionSrt } from "../../lib/db"
-import { Week } from "../../lib/model/week"
-import type { NextApiRequest, NextApiResponse } from "next"
+import mongoose from "mongoose";
+import { connectionSrt } from "../../lib/db";
+import { Week } from "../../lib/model/week";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "GET") {
-    try {
-      console.log("Connecting to Week MongoDB...")
-      await mongoose.connect(connectionSrt, {
-        serverSelectionTimeoutMS: 5000, // Fail quickly if connection fails
-      })
+  try {
+    console.log("Connecting to Week MongoDB...");
+    await mongoose.connect(connectionSrt, {
+      serverSelectionTimeoutMS: 5000,
+    });
+    console.log("Connected to Week MongoDB.");
 
-      console.log("Connected to Week MongoDB.")
+    if (req.method === "GET") {
+      const { courseId, slug, weekId } = req.query;
+      console.log("Received query parameters:", { courseId, slug, weekId });
 
-      const { courseId, slug, weekId } = req.query
-
-      console.log("Received query parameters:", { courseId, slug, weekId })
-
-      let query = {}
+      let query = {};
       if (courseId) {
-        query = { courseId: courseId.toString() }
+        query = { courseId: courseId.toString() };
       }
-      console.log("Query:", query)
 
-      if (courseId && slug && weekId) {
-        // If all parameters are provided, filter the data by courseId, slug, and weekId
-        const weekData = await Week.findOne({
+      if (courseId && weekId) {
+        // Fetch a specific week by courseId and weekId (slug optional)
+        const weekQuery = {
           courseId: courseId.toString(),
-          slug: slug.toString(),
           weekId: Number.parseInt(weekId.toString()),
-        })
+          ...(slug && { slug: slug.toString() }), // Include slug if provided
+        };
+        const weekData = await Week.findOne(weekQuery);
 
         if (weekData) {
-          console.log("Data fetched for courseId, slug, and weekId:", { courseId, slug, weekId }, weekData)
-          res.status(200).json({ success: true, data: weekData })
+          console.log("Data fetched for query:", weekQuery, weekData);
+          res.status(200).json({ success: true, data: weekData });
         } else {
-          console.log("No data found for courseId, slug, and weekId:", { courseId, slug, weekId })
-          res.status(404).json({ success: false, message: "Week not found." })
+          console.log("No data found for query:", weekQuery);
+          res.status(404).json({ success: false, message: "Week not found." });
         }
       } else if (courseId) {
-        // If only courseId is provided, fetch all weeks for that course
-        const weeksData = await Week.find(query)
-        console.log("Data fetched for courseId:", courseId, weeksData)
-        console.log("Fetched data:", weeksData)
-        res.status(200).json({ success: true, data: weeksData })
+        // Fetch all weeks for a course
+        const weeksData = await Week.find(query);
+        console.log("Data fetched for courseId:", courseId, weeksData);
+        res.status(200).json({ success: true, data: weeksData });
       } else {
-        // If no parameters are provided, fetch all data
-        const data = await Week.find(query)
-        console.log("All data fetched:", data)
-        console.log("Fetched data:", data)
-        res.status(200).json({ success: true, data })
+        // Fetch all weeks
+        const data = await Week.find(query);
+        console.log("All data fetched:", data);
+        res.status(200).json({ success: true, data });
       }
-    } catch (error) {
-      console.error("Error connecting to Week MongoDB:", error)
-      res.status(500).json({ success: false, message: "Internal server error." })
+    } else if (req.method === "POST") {
+      const { courseId, weekId, slug, title, lessonCount } = req.body;
+
+      if (!courseId || !weekId || !slug) {
+        console.log("Missing required fields:", { courseId, weekId, slug });
+        return res.status(400).json({ success: false, message: "Missing required fields: courseId, weekId, and slug are required." });
+      }
+
+      const existingWeek = await Week.findOne({ courseId, weekId, slug });
+      if (existingWeek) {
+        console.log("Week already exists:", { courseId, weekId, slug });
+        return res.status(409).json({ success: false, message: "A week with the same courseId, weekId, and slug already exists." });
+      }
+
+      const newWeek = new Week({
+        courseId,
+        weekId: Number.parseInt(weekId),
+        slug,
+        title: title || "",
+        lessonCount: lessonCount !== undefined ? Number.parseInt(lessonCount) : 0,
+      });
+
+      await newWeek.save();
+      console.log("Week created successfully:", newWeek);
+      res.status(201).json({ success: true, data: newWeek });
+    } else if (req.method === "PATCH") {
+      const { courseId, weekId, slug, title, lessonCount } = req.body;
+
+      if (!courseId || !weekId) {
+        console.log("Missing required fields for update:", { courseId, weekId });
+        return res.status(400).json({ success: false, message: "Missing required fields: courseId and weekId are required." });
+      }
+
+      const existingWeek = await Week.findOne({ courseId, weekId: Number.parseInt(weekId) });
+      if (!existingWeek) {
+        console.log("Week not found for update:", { courseId, weekId });
+        return res.status(404).json({ success: false, message: "Week not found." });
+      }
+
+      if (slug) existingWeek.slug = slug;
+      if (title !== undefined) existingWeek.title = title;
+      if (lessonCount !== undefined) existingWeek.lessonCount = Number.parseInt(lessonCount);
+
+      await existingWeek.save();
+      console.log("Week updated successfully:", existingWeek);
+      res.status(200).json({ success: true, data: existingWeek });
+    } else if (req.method === "DELETE") {
+      const { courseId, weekId } = req.query;
+
+      if (!courseId || !weekId) {
+        console.log("Missing required fields for delete:", { courseId, weekId });
+        return res.status(400).json({ success: false, message: "Missing required fields: courseId and weekId are required." });
+      }
+
+      const deletedWeek = await Week.findOneAndDelete({
+        courseId: courseId.toString(),
+        weekId: Number.parseInt(weekId.toString()),
+      });
+
+      if (!deletedWeek) {
+        console.log("Week not found for delete:", { courseId, weekId });
+        return res.status(404).json({ success: false, message: "Week not found." });
+      }
+
+      console.log("Week deleted successfully:", deletedWeek);
+      res.status(200).json({ success: true });
+    } else {
+      res.status(405).json({ success: false, message: "Method not allowed." });
     }
-  } else {
-    res.status(405).json({ success: false, message: "Method not allowed." })
+  } catch (error) {
+    console.error("Error in course-week API:", error);
+    res.status(500).json({ success: false, message: "Internal server error." });
   }
 }
