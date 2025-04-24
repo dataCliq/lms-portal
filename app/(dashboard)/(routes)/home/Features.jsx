@@ -289,7 +289,7 @@ const Features = () => {
 
         {/* Proline Section */}
         <div className="relative min-h-[630px] mt-20">
-          <img src="/blob2.svg" alt="" className="absolute bottom-0 -right-1/4 w-[70%] h-auto" />
+          <img src="/blob2.svg" alt="" className="absolute bottom-0 right-[0px] h-auto" />
           <div className="relative z-10 w-full h-full flex items-center">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex flex-col lg:flex-row items-center justify-between">

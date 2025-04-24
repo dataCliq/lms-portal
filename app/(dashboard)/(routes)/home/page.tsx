@@ -9,6 +9,10 @@ import Bootcamp from "../../_components/Bootcamp";
 import LearningSteps from "../../_components/learningStep";
 import SkillsSection from "./Skills";
 import CardSection from "./CardSection";
+import FAQ from "./FAQ";
+import Pricing from "./Pricing";
+import Testimonials from "./Testimonials";
+import Footer from "../../_components/Footer";
 
 interface Course {
   _id: string;
@@ -92,13 +96,23 @@ const HomePage = () => {
       <div className="w-full">
         <Features />
       </div>
-
+      <div className="w-full">
+        <Pricing />
+      </div>
       {/* Bootcamp Section - Ensure Centering */}
       <div className="w-full py-8 flex justify-center">
         <Bootcamp />
       </div>
       <div className="w-full py-20" />
-      
+      <div className="w-full">
+        <Testimonials/>
+      </div>
+      <div className="w-full">
+        <FAQ/>
+      </div>
+      <div className="w-full">
+        <Footer/>
+      </div>
     </div>
   );
 };

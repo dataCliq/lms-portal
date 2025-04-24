@@ -1,129 +1,171 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { CourseAPI, type Course } from "@/lib/api-client"
 import { Button } from "@/components/ui/button"
-import { Book, Layers, FileText } from "lucide-react"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { toast } from "@/hooks/use-toast"
+import { Plus, BookOpen, Calendar, FileText, ArrowRight } from "lucide-react"
 
 export default function AdminDashboard() {
+  const [courses, setCourses] = useState<Course[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      setLoading(true)
+      try {
+        const coursesData = await CourseAPI.getCourses()
+        setCourses(coursesData)
+      } catch (error) {
+        console.error("Failed to fetch courses:", error)
+        toast({
+          title: "Error",
+          description: "Failed to load courses. Please try again.",
+          variant: "destructive",
+        })
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchCourses()
+  }, [])
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-muted-foreground">Welcome to the course management admin portal.</p>
+    <div className="container mx-auto py-8 px-4">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
+          <p className="text-muted-foreground">Manage your courses, weeks, and lessons</p>
+        </div>
+        <Link href="/admin/lessons/create">
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            Create New Lesson
+          </Button>
+        </Link>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <p className="ml-4 text-lg text-gray-600">Loading courses...</p>
+        </div>
+      ) : courses.length === 0 ? (
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Courses</CardTitle>
-            <Book className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">Manage Courses</div>
-            <p className="text-xs text-muted-foreground">Create, edit, and delete courses</p>
+          <CardContent className="flex flex-col items-center justify-center p-6">
+            <div className="text-center">
+              <h3 className="mt-2 text-lg font-semibold">No courses found</h3>
+              <p className="mt-1 text-sm text-muted-foreground">Create a course first before adding lessons.</p>
+            </div>
           </CardContent>
-          <CardFooter>
-            <Link href="/admin/courses" className="w-full">
-              <Button className="w-full">View Courses</Button>
-            </Link>
-          </CardFooter>
         </Card>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {courses.map((course) => (
+            <Card key={course.courseId} className="overflow-hidden">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-xl">{course.title}</CardTitle>
+                <CardDescription>
+                  {course.weekCount} {course.weekCount === 1 ? "Week" : "Weeks"}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center text-sm text-muted-foreground mb-4">
+                  <BookOpen className="mr-2 h-4 w-4" />
+                  <span>Course ID: {course.courseId}</span>
+                </div>
+                <p className="line-clamp-2 text-sm text-muted-foreground">
+                  {course.description || "No description available"}
+                </p>
+              </CardContent>
+              <CardFooter className="bg-muted/50 pt-3">
+                <Link href={`/admin/lessons/create?courseId=${encodeURIComponent(course.courseId)}`} className="w-full">
+                  <Button variant="outline" className="w-full">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Lesson to this Course
+                  </Button>
+                </Link>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      )}
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Weeks</CardTitle>
-            <Layers className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">Manage Weeks</div>
-            <p className="text-xs text-muted-foreground">Organize course content by weeks</p>
-          </CardContent>
-          <CardFooter>
-            <Link href="/admin/weeks" className="w-full">
-              <Button className="w-full">View Weeks</Button>
-            </Link>
-          </CardFooter>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Lessons</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">Manage Lessons</div>
-            <p className="text-xs text-muted-foreground">Create and edit lesson content</p>
-          </CardContent>
-          <CardFooter>
-            <Link href="/admin/lessons" className="w-full">
-              <Button className="w-full">View Lessons</Button>
-            </Link>
-          </CardFooter>
-        </Card>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Common tasks for course management</CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-4">
-            <div className="flex items-center gap-4">
-              <Link href="/admin/courses/new" className="w-full">
-                <Button variant="outline" className="w-full justify-start">
-                  <Book className="mr-2 h-4 w-4" />
-                  Create New Course
+      <div className="mt-12">
+        <h2 className="text-2xl font-bold tracking-tight mb-4">Quick Actions</h2>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <FileText className="mr-2 h-5 w-5" />
+                Create Lesson
+              </CardTitle>
+              <CardDescription>Add a new lesson to any course</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Create a new lesson with HTML content that will be displayed to students.
+              </p>
+            </CardContent>
+            <CardFooter>
+              <Link href="/admin/lessons/create" className="w-full">
+                <Button className="w-full">
+                  Get Started
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-            </div>
-            <div className="flex items-center gap-4">
-              <Link href="/admin/weeks/new" className="w-full">
-                <Button variant="outline" className="w-full justify-start">
-                  <Layers className="mr-2 h-4 w-4" />
-                  Add New Week
-                </Button>
-              </Link>
-            </div>
-            <div className="flex items-center gap-4">
-              <Link href="/admin/lessons/new" className="w-full">
-                <Button variant="outline" className="w-full justify-start">
-                  <FileText className="mr-2 h-4 w-4" />
-                  Create New Lesson
-                </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
+            </CardFooter>
+          </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Overview</CardTitle>
-            <CardDescription>Course management statistics</CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Book className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Total Courses</span>
-              </div>
-              <span className="text-sm font-medium">Loading...</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Layers className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Total Weeks</span>
-              </div>
-              <span className="text-sm font-medium">Loading...</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Total Lessons</span>
-              </div>
-              <span className="text-sm font-medium">Loading...</span>
-            </div>
-          </CardContent>
-        </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Calendar className="mr-2 h-5 w-5" />
+                Manage Weeks
+              </CardTitle>
+              <CardDescription>Organize your course weeks</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Create and manage weeks for your courses to organize your lessons.
+              </p>
+            </CardContent>
+            <CardFooter>
+              <Link href="/admin/weeks" className="w-full">
+                <Button variant="outline" className="w-full">
+                  View Weeks
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </CardFooter>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <BookOpen className="mr-2 h-5 w-5" />
+                View All Lessons
+              </CardTitle>
+              <CardDescription>See all lessons across courses</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Browse and manage all lessons from all courses in one place.
+              </p>
+            </CardContent>
+            <CardFooter>
+              <Link href="/admin/lessons" className="w-full">
+                <Button variant="outline" className="w-full">
+                  View Lessons
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </CardFooter>
+          </Card>
+        </div>
       </div>
     </div>
   )

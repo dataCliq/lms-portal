@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { type Course, CourseAPI, type Week, WeekAPI } from "@/lib/api-client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -21,27 +21,32 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Plus, Pencil, Trash2, Search, FileText, RefreshCw } from "lucide-react"
-// import { toast } from "@/components/ui/use-toast"
 import { toast } from "@/hooks/use-toast"
-
 
 export default function WeeksPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [courses, setCourses] = useState<Course[]>([])
   const [weeks, setWeeks] = useState<Week[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
-  const [selectedCourse, setSelectedCourse] = useState<string>("")
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(null)
   const [weekToDelete, setWeekToDelete] = useState<{ courseId: string; weekId: number } | null>(null)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [fetchAttempts, setFetchAttempts] = useState(0)
 
   const fetchCourses = async () => {
     try {
+      console.log("Fetching courses...")
       const data = await CourseAPI.getCourses()
+      console.log("Courses fetched:", data)
       setCourses(data)
 
-      if (data.length > 0 && !selectedCourse) {
+      const courseIdFromUrl = searchParams.get("courseId")
+      if (courseIdFromUrl && data.some((course) => course.courseId === courseIdFromUrl)) {
+        setSelectedCourse(courseIdFromUrl)
+      } else if (data.length > 0) {
         setSelectedCourse(data[0].courseId)
       }
     } catch (error) {
@@ -51,15 +56,23 @@ export default function WeeksPage() {
         description: "Failed to fetch courses. Please try again.",
         variant: "destructive",
       })
+      // If we fail to fetch courses, try again after a short delay (up to 3 attempts)
+      if (fetchAttempts < 3) {
+        setTimeout(() => {
+          setFetchAttempts((prev) => prev + 1)
+        }, 1000)
+      }
     }
   }
 
-  const fetchWeeks = async () => {
-    if (!selectedCourse) return
+  const fetchWeeks = async (courseId: string) => {
+    if (!courseId) return
 
     setLoading(true)
     try {
-      const data = await WeekAPI.getWeeks(selectedCourse)
+      console.log(`Fetching weeks for course: ${courseId}`)
+      const data = await WeekAPI.getWeeks(courseId)
+      console.log("Weeks fetched:", data)
       setWeeks(data)
     } catch (error) {
       console.error("Failed to fetch weeks:", error)
@@ -68,6 +81,7 @@ export default function WeeksPage() {
         description: "Failed to fetch weeks for the selected course. Please try again.",
         variant: "destructive",
       })
+      setWeeks([])
     } finally {
       setLoading(false)
     }
@@ -75,7 +89,9 @@ export default function WeeksPage() {
 
   const refreshData = async () => {
     setRefreshing(true)
-    await fetchWeeks()
+    if (selectedCourse) {
+      await fetchWeeks(selectedCourse)
+    }
     setRefreshing(false)
     toast({
       title: "Data refreshed",
@@ -83,13 +99,15 @@ export default function WeeksPage() {
     })
   }
 
+  // This effect runs when the component mounts or when fetchAttempts changes
   useEffect(() => {
     fetchCourses()
-  }, [])
+  }, [fetchAttempts])
 
+  // This effect runs when selectedCourse changes
   useEffect(() => {
     if (selectedCourse) {
-      fetchWeeks()
+      fetchWeeks(selectedCourse)
     }
   }, [selectedCourse])
 
@@ -97,9 +115,7 @@ export default function WeeksPage() {
     if (!weekToDelete) return
 
     try {
-      console.log("Attempting to delete week:", weekToDelete)
-      const response = await WeekAPI.deleteWeek(weekToDelete.courseId, weekToDelete.weekId)
-      console.log("Delete response:", response)
+      await WeekAPI.deleteWeek(weekToDelete.courseId, weekToDelete.weekId)
       setWeeks(
         weeks.filter((week) => !(week.courseId === weekToDelete.courseId && week.weekId === weekToDelete.weekId)),
       )
@@ -107,7 +123,7 @@ export default function WeeksPage() {
       setShowDeleteDialog(false)
       toast({
         title: "Week deleted",
-        description: "The week has been deleted successfully.",
+        description: `Week ${weekToDelete.weekId} has been deleted successfully.`,
         duration: 5000,
       })
     } catch (error) {
@@ -123,11 +139,7 @@ export default function WeeksPage() {
 
   const filteredWeeks = weeks.filter((week) => {
     const searchLower = searchTerm.toLowerCase()
-    return (
-      week.title?.toLowerCase().includes(searchLower) ||
-      week.slug.toLowerCase().includes(searchLower) ||
-      week.weekId.toString().includes(searchLower)
-    )
+    return week.slug.toLowerCase().includes(searchLower) || week.weekId.toString().includes(searchLower)
   })
 
   return (
@@ -142,7 +154,7 @@ export default function WeeksPage() {
             <RefreshCw className={`mr-2 h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
             Refresh
           </Button>
-          <Link href="/admin/weeks/new">
+          <Link href={`/admin/weeks/new${selectedCourse ? `?courseId=${encodeURIComponent(selectedCourse)}` : ""}`}>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
               Add Week
@@ -153,7 +165,7 @@ export default function WeeksPage() {
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center">
         <div className="w-full md:w-1/3">
-          <Select value={selectedCourse} onValueChange={setSelectedCourse}>
+          <Select value={selectedCourse || ""} onValueChange={setSelectedCourse}>
             <SelectTrigger>
               <SelectValue placeholder="Select a course" />
             </SelectTrigger>
@@ -182,16 +194,19 @@ export default function WeeksPage() {
             <div className="text-center">
               <h3 className="mt-2 text-lg font-semibold">No weeks found</h3>
               <p className="mt-1 text-sm text-muted-foreground">
-                {searchTerm ? "Try a different search term" : "Get started by creating a new week for this course"}
+                {searchTerm
+                  ? "No weeks match your search."
+                  : "No weeks exist for this course. Create a new week to get started."}
               </p>
-              {!searchTerm && (
-                <Link href="/admin/weeks/new" className="mt-4 inline-block">
-                  <Button>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Week
-                  </Button>
-                </Link>
-              )}
+              <Link
+                href={`/admin/weeks/new${selectedCourse ? `?courseId=${encodeURIComponent(selectedCourse)}` : ""}`}
+                className="mt-4 inline-block"
+              >
+                <Button>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Week
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
@@ -201,7 +216,7 @@ export default function WeeksPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Week #</TableHead>
-                <TableHead>Title</TableHead>
+                <TableHead>Name</TableHead>
                 <TableHead>Slug</TableHead>
                 <TableHead className="hidden md:table-cell">Lessons</TableHead>
                 <TableHead className="hidden md:table-cell">Created</TableHead>
@@ -212,7 +227,7 @@ export default function WeeksPage() {
               {filteredWeeks.map((week) => (
                 <TableRow key={`${week.courseId}-${week.weekId}`}>
                   <TableCell>{week.weekId}</TableCell>
-                  <TableCell className="font-medium">{week.title || `Week ${week.weekId}`}</TableCell>
+                  <TableCell className="font-medium">{`Week ${week.weekId}`}</TableCell>
                   <TableCell>{week.slug}</TableCell>
                   <TableCell className="hidden md:table-cell">
                     <div className="flex items-center">
@@ -220,7 +235,9 @@ export default function WeeksPage() {
                       {week.lessonCount || 0}
                     </div>
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">{week.createdAt || "N/A"}</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {week.createdAt ? new Date(week.createdAt).toLocaleDateString() : "N/A"}
+                  </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                       <Link href={`/admin/weeks/${encodeURIComponent(week.courseId)}/${week.weekId}`}>

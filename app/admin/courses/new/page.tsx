@@ -1,232 +1,204 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
-import Link from "next/link"
-import { type Course, CourseAPI, type Week, WeekAPI, type Lesson } from "@/lib/api-client"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { toast } from "@/hooks/use-toast"
-import { ArrowLeft, Save } from "lucide-react"
+import type React from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { type Course, CourseAPI } from "@/lib/api-client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/hooks/use-toast";
+import { ArrowLeft, Save } from "lucide-react";
 
-export default function NewLessonPage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const initialCourseId = searchParams.get("courseId") || ""
-  const initialWeekId = searchParams.get("weekId") ? Number.parseInt(searchParams.get("weekId")!) : 0
-
-  const [loading, setLoading] = useState(false)
-  const [courses, setCourses] = useState<Course[]>([])
-  const [weeks, setWeeks] = useState<Week[]>([])
-  const [formData, setFormData] = useState<Partial<Lesson>>({
-    courseId: initialCourseId,
-    weekId: initialWeekId,
-    lessonId: 1,
+export default function NewCoursePage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState<Partial<Course>>({
+    courseId: "",
     title: "",
-    content: "",
-  })
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const data = await CourseAPI.getCourses()
-        setCourses(data)
-        if (!initialCourseId && data.length > 0) {
-          setFormData((prev) => ({ ...prev, courseId: data[0].courseId }))
-        }
-      } catch (error) {
-        console.error("Failed to fetch courses:", error)
-        toast({
-          title: "Error",
-          description: "Failed to fetch courses",
-          variant: "destructive",
-        })
-      }
-    }
-
-    const fetchWeeks = async () => {
-      if (!formData.courseId) return
-      try {
-        const data = await WeekAPI.getWeeks(formData.courseId)
-        setWeeks(data)
-        if (!initialWeekId && data.length > 0) {
-          setFormData((prev) => ({ ...prev, weekId: data[0].weekId }))
-        }
-      } catch (error) {
-        console.error("Failed to fetch weeks:", error)
-        toast({
-          title: "Error",
-          description: "Failed to fetch weeks",
-          variant: "destructive",
-        })
-      }
-    }
-
-    fetchCourses()
-    fetchWeeks()
-  }, [formData.courseId, initialCourseId, initialWeekId])
+    slug: "",
+    imageSrc: "",
+    description: "",
+    tags: [],
+    rating: 0,
+    weekCount: 0,
+    price: null,
+    createdAt: new Date().toISOString().split("T")[0],
+    updatedAt: new Date().toISOString().split("T")[0],
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "lessonId" ? Number.parseInt(value) : value,
-    }))
-  }
+      [name]: name === "rating" || name === "weekCount" ? Number.parseFloat(value) || 0 : value,
+    }));
+  };
 
-  const handleCourseChange = (courseId: string) => {
-    setFormData((prev) => ({ ...prev, courseId, weekId: 0 }))
-    setWeeks([])
-  }
-
-  const handleWeekChange = (weekId: string) => {
-    setFormData((prev) => ({ ...prev, weekId: Number.parseInt(weekId) }))
-  }
+  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const tagsString = e.target.value;
+    const tagsArray = tagsString
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag);
+    setFormData((prev) => ({ ...prev, tags: tagsArray }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!formData.courseId || !formData.weekId || !formData.lessonId || !formData.title) {
+    if (!formData.courseId || !formData.title || !formData.slug) {
       toast({
         title: "Missing required fields",
-        description: "Please fill in all required fields.",
+        description: "Please fill in course ID, title, and slug.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
 
     try {
-      await LessonAPI.createLesson(formData as Lesson)
+      await CourseAPI.createCourse(formData as Course);
       toast({
-        title: "Lesson created",
-        description: "The lesson has been created successfully.",
-      })
-      router.push("/admin/lessons")
+        title: "Course created",
+        description: "The course has been created successfully.",
+      });
+      router.push("/admin/courses");
     } catch (error) {
-      console.error("Failed to create lesson:", error)
+      console.error("Failed to create course:", error);
       toast({
-        title: "Failed to create lesson",
+        title: "Failed to create course",
         description: error instanceof Error ? error.message : "An unknown error occurred",
         variant: "destructive",
-      })
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
-        <Link href="/admin/lessons">
+        <Link href="/admin/courses">
           <Button variant="ghost" size="icon">
             <ArrowLeft className="h-4 w-4" />
             <span className="sr-only">Back</span>
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Create New Lesson</h1>
-          <p className="text-muted-foreground">Add a new lesson to a course week.</p>
+          <h1 className="text-3xl font-bold tracking-tight">Create New Course</h1>
+          <p className="text-muted-foreground">Add a new course to the platform.</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         <Card>
           <CardHeader>
-            <CardTitle>Lesson Information</CardTitle>
-            <CardDescription>Enter the information for your new lesson.</CardDescription>
+            <CardTitle>Course Information</CardTitle>
+            <CardDescription>Enter the information for your new course.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="courseId">
-                Course <span className="text-red-500">*</span>
-              </Label>
-              <Select value={formData.courseId} onValueChange={handleCourseChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a course" />
-                </SelectTrigger>
-                <SelectContent>
-                  {courses.map((course) => (
-                    <SelectItem key={course.courseId} value={course.courseId}>
-                      {course.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="courseId">
+                  Course ID <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="courseId"
+                  name="courseId"
+                  placeholder="e.g., sql"
+                  value={formData.courseId}
+                  onChange={handleChange}
+                  required
+                />
+                <p className="text-xs text-muted-foreground">Unique identifier for the course.</p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="title">
+                  Title <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="title"
+                  name="title"
+                  placeholder="e.g., Mastering SQL"
+                  value={formData.title}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="slug">
+                  Slug <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="slug"
+                  name="slug"
+                  placeholder="e.g., mastering-sql"
+                  value={formData.slug}
+                  onChange={handleChange}
+                  required
+                />
+                <p className="text-xs text-muted-foreground">URL-friendly version of the title.</p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="imageSrc">Image URL</Label>
+                <Input
+                  id="imageSrc"
+                  name="imageSrc"
+                  placeholder="e.g., https://example.com/image.jpg"
+                  value={formData.imageSrc}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="weekId">
-                Week <span className="text-red-500">*</span>
-              </Label>
-              <Select
-                value={formData.weekId?.toString()}
-                onValueChange={handleWeekChange}
-                disabled={!formData.courseId}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a week" />
-                </SelectTrigger>
-                <SelectContent>
-                  {weeks.map((week) => (
-                    <SelectItem key={week.weekId} value={week.weekId.toString()}>
-                      Week {week.weekId}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="lessonId">
-                Lesson Number <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="lessonId"
-                name="lessonId"
-                type="number"
-                min="1"
-                value={formData.lessonId}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="title">
-                Title <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="title"
-                name="title"
-                placeholder="e.g., Introduction to SQL"
-                value={formData.title}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="content">Content</Label>
+              <Label htmlFor="description">Description</Label>
               <Textarea
-                id="content"
-                name="content"
-                placeholder="Enter lesson content..."
-                value={formData.content}
+                id="description"
+                name="description"
+                placeholder="Describe the course..."
+                value={formData.description}
                 onChange={handleChange}
-                rows={6}
+                rows={4}
               />
-              <p className="text-xs text-muted-foreground">Optional content for the lesson.</p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="tags">Tags (comma separated)</Label>
+                <Input
+                  id="tags"
+                  name="tags"
+                  placeholder="e.g., sql, database, beginner"
+                  value={formData.tags?.join(", ")}
+                  onChange={handleTagsChange}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="rating">Rating (0-5)</Label>
+                <Input
+                  id="rating"
+                  name="rating"
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  value={formData.rating}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
-            <Link href="/admin/lessons">
+            <Link href="/admin/courses">
               <Button variant="outline">Cancel</Button>
             </Link>
             <Button type="submit" disabled={loading}>
@@ -235,7 +207,7 @@ export default function NewLessonPage() {
               ) : (
                 <>
                   <Save className="mr-2 h-4 w-4" />
-                  Create Lesson
+                  Create Course
                 </>
               )}
             </Button>
@@ -243,5 +215,5 @@ export default function NewLessonPage() {
         </Card>
       </form>
     </div>
-  )
+  );
 }

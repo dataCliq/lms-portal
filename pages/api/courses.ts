@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import { connectionSrt } from "../../lib/db";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-// Define Course schema
 const courseSchema = new mongoose.Schema({
   courseId: { type: String, required: true, unique: true },
   title: { type: String, required: true },
@@ -13,8 +12,8 @@ const courseSchema = new mongoose.Schema({
   description: { type: String, default: "" },
   tags: { type: [String], default: [] },
   price: { type: Number, default: null },
-  createdAt: { type: String, required: true },
-  updatedAt: { type: String, required: true },
+  createdAt: { type: Date, required: true },
+  updatedAt: { type: Date, required: true },
 });
 
 const Course = mongoose.models.Course || mongoose.model("Course", courseSchema, "courseName");
@@ -25,17 +24,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await mongoose.connect(connectionSrt, {
       serverSelectionTimeoutMS: 5000,
     });
-    console.log("Connected to Courses MongoDB.");
+    console.log("Connected to database:", mongoose.connection.db.databaseName);
+
+    // Debug: Count documents
+    const count = await Course.countDocuments();
+    console.log("Number of documents in Course:", count);
 
     if (req.method === "GET") {
       const { courseId } = req.query;
       let query = courseId ? { courseId: courseId.toString() } : {};
-      const courses = await Course.find(query);
+      console.log("Executing query:", query);
+      const courses = await Course.find(query).lean();
       console.log("Fetched courses:", courses);
       res.status(200).json({ success: true, data: courses });
     } else if (req.method === "POST") {
       const body = req.body;
-      console.log("Received POST body:", body); // Debug incoming data
+      console.log("Received POST body:", body);
       if (!body.courseId || !body.title || !body.slug) {
         return res.status(400).json({ success: false, message: "courseId, title, and slug are required." });
       }
@@ -49,9 +53,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         description: body.description ?? "",
         tags: body.tags ?? [],
         price: body.price ?? null,
-        createdAt: body.createdAt,
-        updatedAt: body.updatedAt,
+        createdAt: body.createdAt ? new Date(body.createdAt) : new Date(),
+        updatedAt: body.updatedAt ? new Date(body.updatedAt) : new Date(),
       };
+      const existingCourse = await Course.findOne({ courseId: body.courseId }).lean();
+      if (existingCourse) {
+        return res.status(409).json({ success: false, message: "Course with this courseId already exists." });
+      }
       const course = new Course(courseData);
       const result = await course.save();
       console.log("Created course:", result);
@@ -66,13 +74,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         title: body.title,
         slug: body.slug,
         description: body.description ?? "",
-        updatedAt: body.updatedAt,
+        imageSrc: body.imageSrc,
+        tags: body.tags,
+        rating: body.rating,
+        weekCount: body.weekCount,
+        price: body.price,
+        updatedAt: body.updatedAt ? new Date(body.updatedAt) : new Date(),
       };
+      Object.keys(updateData).forEach((key) => updateData[key] === undefined && delete updateData[key]);
       const result = await Course.findOneAndUpdate(
         { courseId: courseId.toString() },
         { $set: updateData },
         { new: true }
-      );
+      ).lean();
       if (!result) {
         return res.status(404).json({ success: false, message: "Course not found." });
       }
@@ -83,7 +97,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (!courseId) {
         return res.status(400).json({ success: false, message: "courseId is required." });
       }
-      const result = await Course.findOneAndDelete({ courseId: courseId.toString() });
+      const result = await Course.findOneAndDelete({ courseId: courseId.toString() }).lean();
       if (!result) {
         return res.status(404).json({ success: false, message: "Course not found." });
       }
@@ -94,7 +108,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } catch (error) {
     console.error("Error in /api/courses:", error);
-    res.status(500).json({ success: false, message: `Internal server error` });
+    res.status(500).json({ success: false, message: "Internal server error" });
   } finally {
     if (mongoose.connection.readyState === 1) {
       await mongoose.connection.close();

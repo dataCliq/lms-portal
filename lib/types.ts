@@ -14,15 +14,13 @@ export interface Course {
   }
   
   export interface Week {
-    _id?: string
-    weekId: number
-    courseId: string
-    slug: string
-    title?: string
-    lessonCount?: number
-    lessonList?: Array<{ title: string; id: string }>
-    createdAt?: string
-    updatedAt?: string
+    courseId: string;
+    weekId: number;
+    slug: string;
+    lessonCount: number;
+    lessonList?: { title: string; id: string }[];
+    createdAt: string;
+    updatedAt: string;
   }
   
   export interface Lesson {

@@ -7,11 +7,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
 
   return (
-    <div className="flex flex-col items-center w-full min-h-screen">
+    <div className="flex flex-col w-full min-h-screen">
       <Navbar />
       {pathname === "/" || pathname === "/home" ? (
         <div
-          className="flex flex-col items-center justify-center w-full min-h-screen bg-cover bg-center bg-no-repeat"
+          className="flex flex-col w-full min-h-screen bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: "url('/background.svg')",
           }}
@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {children}
         </div>
       ) : (
-        <div className="w-full bg-white p-6 min-h-screen">
+        <div className="w-full bg-white min-h-screen">
           {children}
         </div>
       )}

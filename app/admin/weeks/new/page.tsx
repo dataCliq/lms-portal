@@ -1,9 +1,8 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { type Course, CourseAPI, type Week, WeekAPI } from "@/lib/api-client"
 import { Button } from "@/components/ui/button"
@@ -11,19 +10,20 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-// import { toast } from "@/components/ui/use-toast"
 import { toast } from "@/hooks/use-toast"
 import { ArrowLeft, Save } from "lucide-react"
 
 export default function NewWeekPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
   const [courses, setCourses] = useState<Course[]>([])
   const [formData, setFormData] = useState<Partial<Week>>({
-    courseId: "",
+    courseId: searchParams.get("courseId") || "",
     weekId: 1,
-    slug: "",
+    slug: "w1",
     lessonCount: 0,
+    lessonList: [],
   })
 
   useEffect(() => {
@@ -32,7 +32,13 @@ export default function NewWeekPage() {
         const data = await CourseAPI.getCourses()
         setCourses(data)
 
-        if (data.length > 0) {
+        const courseIdFromUrl = searchParams.get("courseId")
+        if (courseIdFromUrl && data.some((course) => course.courseId === courseIdFromUrl)) {
+          setFormData((prev) => ({
+            ...prev,
+            courseId: courseIdFromUrl,
+          }))
+        } else if (data.length > 0) {
           setFormData((prev) => ({
             ...prev,
             courseId: data[0].courseId,
@@ -49,7 +55,7 @@ export default function NewWeekPage() {
     }
 
     fetchCourses()
-  }, [])
+  }, [searchParams])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -75,7 +81,7 @@ export default function NewWeekPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!formData.courseId || !formData.weekId || !formData.slug || formData.lessonCount === undefined) {
+    if (!formData.courseId || !formData.weekId || !formData.slug) {
       toast({
         title: "Missing required fields",
         description: "Please fill in all required fields.",
@@ -90,9 +96,9 @@ export default function NewWeekPage() {
       await WeekAPI.createWeek(formData as Week)
       toast({
         title: "Week created",
-        description: "The week has been created successfully.",
+        description: `Week ${formData.weekId} has been created successfully.`,
       })
-      router.push("/admin/weeks")
+      router.push(`/admin/weeks?courseId=${encodeURIComponent(formData.courseId!)}`)
     } catch (error) {
       console.error("Failed to create week:", error)
       toast({
