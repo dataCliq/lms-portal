@@ -1,78 +1,101 @@
-'use client';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBook, faDownload, faTrophy, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+"use client"
+
+import { ArrowRight, BarChart3, FileText, Users } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import Image from "next/image"
 
 const CardSection = () => {
-    return (
-        <div className="w-full bg-[#F5FEFC] text-[#2E3440] py-10 min-h-[600px]">
-            <div className="flex flex-col items-center justify-center px-4 sm:px-6 lg:px-10 xl:px-20">
-                {/* Title and Subline */}
-                <h2 className="text-[18px] sm:text-[24px] md:text-[30px] lg:text-[36px] xl:text-[40px] font-bold mb-2 font-poppins text-center leading-tight max-w-[90%] text-[#28282B]">
-                    Why Choose DataCliq <br /> for Your Data Journey?
-                </h2>
-                <p className="text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] text-center font-regular max-w-[90%] sm:max-w-[700px] lg:max-w-[850px] xl:max-w-[1000px] w-full mx-auto font-poppins mb-8 text-[#104650]">
-                    Unlock Your Data Potential with Confidence
-                </p>
+  const features = [
+    {
+      title: "Free Beginner Courses",
+      description:
+        "Start with our free courses on Power BI, Excel, Python, Tableau, SQL, and PostgreSQL. Learn at your own pace with weekly lessons.",
+      icon: BarChart3,
+      color: "bg-blue-50 border-blue-100",
+      hoverColor: "group-hover:text-blue-600",
+      buttonColor: "text-blue-600 hover:text-blue-700",
+      imagePath: "/dashboard.svg",
+      action: "Start for Free",
+      link: "#courses",
+    },
+    {
+      title: "Free Cheat Sheets",
+      description:
+        "Access downloadable cheat sheets for quick reference on formulas, functions, and best practices in data analysis.",
+      icon: FileText,
+      color: "bg-emerald-50 border-emerald-100",
+      hoverColor: "group-hover:text-emerald-600",
+      buttonColor: "text-emerald-600 hover:text-emerald-700",
+      imagePath: "/Cheatsheets.png",
+      action: "Download Now",
+      link: "#cheatsheets",
+    },
+    {
+      title: "Proven Mentorship",
+      description:
+        "Join a community backed by our successful 1-month Power BI mentorship program, trusted by 100+ learners.",
+      icon: Users,
+      color: "bg-amber-50 border-amber-100",
+      hoverColor: "group-hover:text-amber-600",
+      buttonColor: "text-amber-600 hover:text-amber-700",
+      imagePath: "/mentor.svg",
+      action: "See Testimonials",
+      link: "#testimonials",
+    },
+  ]
 
-                {/* Card Container */}
-                <div className="flex flex-wrap justify-center w-full gap-6 px-4 sm:px-6 lg:px-10">
-                    {/* Card 1: Free Beginner Courses */}
-                    <div className="w-full sm:w-[380px] bg-[#D9EBFF] shadow-[0px_4px_20px_rgba(0,0,0,0.05)] p-6 rounded-2xl flex flex-col items-start text-left transform transition-transform duration-300 hover:scale-105">
-                        {/* Icon in Place of Data Visualization */}
-                        <div className="w-full h-[150px] bg-[#E6F5F7] rounded-lg mb-4 flex items-center justify-center">
-                        <img
-                                src='/dashboard.svg'
-                                className="rounded-md"
-                            />
-                        </div>
-                        <h1 className="font-bold text-xl text-[#28282B] mb-2">Free Beginner Courses</h1>
-                        <p className="text-sm text-[#4C566A] leading-6 mb-4">
-                            Start with our free courses on Power BI, Excel, Python, Tableau, SQL, and PostgreSQL. Learn at your own pace with weekly lessons.
-                        </p>
-                        <a href="#" className="text-[#00A3B5] font-medium flex items-center gap-2 text-base">
-                            Start for Free <FontAwesomeIcon icon={faArrowRight} className="text-sm" />
-                        </a>
-                    </div>
-
-                    {/* Card 2: Free Cheat Sheets */}
-                    <div className="w-full sm:w-[380px] bg-[#DAFAF3] shadow-[0px_4px_20px_rgba(0,0,0,0.05)] p-6 rounded-2xl flex flex-col items-start text-left transform transition-transform duration-300 hover:scale-105">
-                        {/* Icon in Place of Data Visualization */}
-                        <div className="w-full h-[150px] bg-[#E6F5F7] rounded-lg mb-4 flex items-center justify-center">
-                            <img
-                                src='/Cheatsheets.png'
-                                className="rounded-md"
-                            />
-                        </div>
-                        <h1 className="font-bold text-xl text-[#28282B] mb-2">Free Cheat Sheets</h1>
-                        <p className="text-sm text-[#4C566A] leading-6 mb-4">
-                            Access downloadable cheat sheets for quick reference on formulas, functions, and best practices in data analysis.
-                        </p>
-                        <a href="#" className="text-[#00A3B5] font-medium flex items-center gap-2 text-base">
-                            Download Now <FontAwesomeIcon icon={faArrowRight} className="text-sm" />
-                        </a>
-                    </div>
-
-                    {/* Card 3: Proven Mentorship */}
-                    <div className="w-full sm:w-[380px] bg-[#F5F5F6] shadow-[0px_4px_20px_rgba(0,0,0,0.05)] p-6 rounded-2xl flex flex-col items-start text-left transform transition-transform duration-300 hover:scale-105">
-                        {/* Icon in Place of Data Visualization */}
-                        <div className="w-full h-[150px] bg-[#E6F5F7] rounded-lg mb-4 flex items-center justify-center">
-                        <img
-                                src='/mentor.svg'
-                                className="rounded-md"
-                            />
-                        </div>
-                        <h1 className="font-bold text-xl text-[#28282B] mb-2">Proven Mentorship</h1>
-                        <p className="text-sm text-[#4C566A] leading-6 mb-4">
-                            Join a community backed by our successful 1-month Power BI mentorship program, trusted by 100+ learners.
-                        </p>
-                        <a href="#" className="text-[#00A3B5] font-medium flex items-center gap-2 text-base">
-                            See Testimonials <FontAwesomeIcon icon={faArrowRight} className="text-sm" />
-                        </a>
-                    </div>
-                </div>
-            </div>
+  return (
+    <section className="w-full bg-[#F5FEFC] py-20 px-48">
+      <div className="container px-4 md:px-6">
+        <div className="flex flex-col items-center text-center space-y-4 mb-12">
+          <div className="inline-block rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 mb-2">
+            DataCliq Advantage
+          </div>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900">
+            Why Choose DataCliq for Your Data Journey?
+          </h2>
+          <p className="text-slate-600 md:text-lg max-w-[800px]">
+            Unlock your data potential with confidence through our expert-led courses, resources, and community.
+          </p>
         </div>
-    );
-};
 
-export default CardSection;
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {features.map((feature, index) => (
+            <Card
+              key={index}
+              className={`group border ${feature.color} transition-all duration-300 hover:shadow-lg hover:-translate-y-1`}
+            >
+              <CardHeader className="pb-2">
+                <div className="w-full h-48 relative rounded-md overflow-hidden mb-4">
+                  <Image
+                    src={feature.imagePath || "/placeholder.svg"}
+                    alt={feature.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <CardTitle className={`text-xl font-bold transition-colors ${feature.hoverColor}`}>
+                  {feature.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-slate-600 text-base">{feature.description}</CardDescription>
+              </CardContent>
+              <CardFooter>
+                <Button variant="ghost" className={`p-0 ${feature.buttonColor} font-medium`} asChild>
+                  <a href={feature.link}>
+                    {feature.action}
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </a>
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export default CardSection

@@ -39,7 +39,7 @@ export default function WeekList() {
   const [error, setError] = useState("")
   const searchParams = useSearchParams()
   const router = useRouter()
-  const courseId = searchParams?.get("courseId") || "sql"
+  const courseId = searchParams?.get("courseId") || "power-bi"
 
   useEffect(() => {
     const fetchWeeks = async () => {
@@ -259,10 +259,10 @@ export default function WeekList() {
                   </div>
 
                   <Link
-                    href={`/course/weeks/${week.weekId}?courseId=${courseId}&slug=${week.slug}/${week.lessonList[0]?.slug || ""}`}
+                    href={`/course/weeks/${week.weekId}?courseId=${courseId}&slug=${week.slug}`}
                   >
                     <button className="flex items-center text-[#0293A6] font-medium hover:text-[#026d7d] transition-colors">
-                      <span>View Week</span>
+                      <span>View Lessons</span>
                       <ChevronRight className="h-4 w-4 ml-1" />
                     </button>
                   </Link>

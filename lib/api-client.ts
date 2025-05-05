@@ -42,6 +42,9 @@ export type Course = {
   updatedAt?: string;
 };
 
+
+
+
 export const CourseAPI = {
   async getCourses() {
     const response = await fetch("/api/courses");
