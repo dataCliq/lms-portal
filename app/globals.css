@@ -106,47 +106,100 @@ body,
   }
 }
 
-.content-area {
-  padding: 32px;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+/* TipTap Editor Content Styling */
+.tiptap-content {
+  @apply text-gray-800;
 }
 
-h1{
-  font-size: 40px;
-  font-weight: 600;
+.tiptap-content h1 {
+  @apply text-3xl font-bold mt-8 mb-4;
 }
-/* styles/global.css */
-.lesson-heading {
-    font-weight: 700;
-    margin-bottom: 1rem;
-  }
-  .lesson-heading[h1] {
-    font-size: 2rem;
-  }
-  .lesson-heading[h2] {
-    font-size: 1.5rem;
-  }
-  .lesson-heading[h3] {
-    font-size: 1.25rem;
-  }
-  
-  .lesson-table {
-    border-collapse: collapse;
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-  .lesson-table-row {
-    /* Optional styling for rows */
-  }
-  .lesson-table-header {
-    background-color: #f4f4f4;
-    font-weight: bold;
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-  }
-  .lesson-table-cell {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-  }
+
+.tiptap-content h2 {
+  @apply text-2xl font-bold mt-6 mb-3;
+}
+
+.tiptap-content h3 {
+  @apply text-xl font-bold mt-5 mb-2;
+}
+
+.tiptap-content p {
+  @apply my-4 leading-relaxed;
+}
+
+.tiptap-content ul {
+  @apply list-disc pl-6 my-4;
+}
+
+.tiptap-content ol {
+  @apply list-decimal pl-6 my-4;
+}
+
+.tiptap-content li {
+  @apply mb-2;
+}
+
+.tiptap-content a {
+  @apply text-[#0293A6] hover:underline;
+}
+
+.tiptap-content blockquote {
+  @apply border-l-4 border-[#0293A6] pl-4 italic my-4 text-gray-600;
+}
+
+.tiptap-content pre {
+  @apply bg-gray-100 p-4 rounded-lg overflow-x-auto my-4;
+}
+
+.tiptap-content code {
+  @apply font-mono text-sm bg-gray-100 px-1 py-0.5 rounded;
+}
+
+.tiptap-content pre code {
+  @apply bg-transparent p-0;
+}
+
+.tiptap-content img {
+  @apply max-w-full h-auto rounded-lg my-4;
+}
+
+.tiptap-content table {
+  @apply w-full border-collapse my-4;
+}
+
+.tiptap-content th {
+  @apply bg-gray-100 border border-gray-300 px-4 py-2 text-left;
+}
+
+.tiptap-content td {
+  @apply border border-gray-300 px-4 py-2;
+}
+
+.tiptap-content hr {
+  @apply my-8 border-t border-gray-200;
+}
+
+.tiptap-content .tableWrapper {
+  @apply overflow-x-auto my-4;
+}
+
+/* Custom styling for TipTap extensions */
+.tiptap-content .task-list {
+  @apply list-none pl-0;
+}
+
+.tiptap-content .task-list-item {
+  @apply flex items-start;
+}
+
+.tiptap-content .task-list-item input[type="checkbox"] {
+  @apply mr-2 mt-1;
+}
+
+.tiptap-content .highlight {
+  @apply bg-yellow-100 px-1;
+}
+
+.tiptap-content .collaboration-cursor__caret {
+  @apply border-l-2 border-[#0293A6] mx-0.5 transition-colors;
+}

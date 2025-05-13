@@ -1,0 +1,145 @@
+/* Custom styles for lesson content */
+.custom-lesson-content h1 {
+  @apply text-3xl font-bold mt-8 mb-4 text-gray-900;
+}
+
+.custom-lesson-content h2 {
+  @apply text-2xl font-bold mt-6 mb-3 text-gray-900;
+}
+
+.custom-lesson-content h3 {
+  @apply text-xl font-bold mt-5 mb-2 text-gray-900;
+}
+
+.custom-lesson-content p {
+  @apply my-4 leading-relaxed text-gray-700;
+}
+
+.custom-lesson-content ul {
+  @apply list-disc pl-6 my-4;
+}
+
+.custom-lesson-content ol {
+  @apply list-decimal pl-6 my-4;
+}
+
+.custom-lesson-content li {
+  @apply mb-2;
+}
+
+.custom-lesson-content blockquote {
+  @apply border-l-4 border-gray-300 pl-4 italic my-4 text-gray-600;
+}
+
+.custom-lesson-content pre {
+  @apply bg-gray-50 p-4 rounded-lg overflow-x-auto my-4 border border-gray-200;
+}
+
+.custom-lesson-content code {
+  @apply font-mono text-sm bg-gray-50 px-1 py-0.5 rounded text-gray-800;
+}
+
+.custom-lesson-content img {
+  @apply max-w-full h-auto rounded-lg my-4;
+}
+
+.ProseMirror table {
+  @apply border-collapse w-full my-4 shadow-sm rounded-lg overflow-hidden;
+}
+.ProseMirror table td,
+.ProseMirror table th {
+  @apply border border-gray-300 px-4 py-2 relative;
+}
+
+.ProseMirror table th {
+  @apply bg-gray-200 text-white font-semibold;
+}
+
+/* Additional styling for specific elements */
+.ProseMirror table td {
+  @apply bg-white text-gray-800;
+}
+
+.custom-lesson-content tr:hover {
+  @apply bg-gray-50;
+}
+
+/* Style for negative balance values */
+.custom-lesson-content .negative {
+  @apply text-red-500;
+}
+
+
+
+/* Custom classes for lesson content */
+.heading-1-t {
+  @apply text-3xl font-bold mt-8 mb-4 text-gray-900;
+}
+
+.heading-2-t {
+  @apply text-2xl font-bold mt-6 mb-3 text-gray-900;
+}
+
+.heading-3-t {
+  @apply text-xl font-bold mt-5 mb-2 text-gray-900;
+}
+
+.para-t {
+  @apply my-4 leading-relaxed text-gray-700;
+}
+
+.bullet-list-t {
+  @apply list-disc pl-6 my-4;
+}
+
+.ordered-list-t {
+  @apply list-decimal pl-6 my-4;
+}
+
+.list-item-t {
+  @apply mb-2;
+}
+
+.blockquote-t {
+  @apply border-l-4 border-gray-300 pl-4 italic my-4 text-gray-600;
+}
+
+.code-block-t {
+  @apply bg-gray-50 p-4 rounded-lg overflow-x-auto my-4 font-mono text-sm border border-gray-200;
+}
+
+.image-t {
+  @apply max-w-full h-auto rounded-lg my-4;
+}
+
+.table-t {
+  @apply w-full border-collapse my-4;
+}
+
+.table-header-t {
+  @apply bg-gray-100 border border-gray-200 px-4 py-2 text-left font-semibold text-gray-800;
+}
+
+.table-cell-t {
+  @apply border border-gray-200 px-4 py-2 text-gray-700;
+}
+
+.keyword-t {
+  @apply relative bg-transparent px-1 py-0.5 text-red-600 font-semibold cursor-help;
+}
+
+.keyword-dropdown-t {
+  @apply hidden absolute bottom-full left-0 bg-white border border-gray-200 p-2 rounded-md shadow-lg w-48 z-10 text-gray-700 text-sm;
+}
+
+.keyword-t:hover .keyword-dropdown-t {
+  @apply block;
+}
+
+.highlight-t {
+  @apply bg-blue-100 px-1 text-blue-800;
+}
+
+.underline-t {
+  @apply underline;
+}

@@ -4,6 +4,7 @@ import { useRouter, useSearchParams, useParams } from "next/navigation"
 import { useEffect, useState, useRef } from "react"
 import Link from "next/link"
 import { ArrowLeft, Clock, CheckCircle, BookOpen, ChevronRight, ChevronLeft, AlertCircle, Play } from "lucide-react"
+import "./lesson-styles.css"
 
 interface LessonItem {
   id: string
@@ -170,7 +171,7 @@ export default function WeekPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen ">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00A3B5]"></div>
           <span className="mt-4 text-lg text-gray-700">Loading week content...</span>
@@ -203,77 +204,69 @@ export default function WeekPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center">
-            <button onClick={handleGoBack} className="mr-4 text-gray-600 hover:text-[#00A3B5] transition-colors">
-              <ArrowLeft className="h-5 w-5" />
-            </button>
-            <div>
-              <div className="flex items-center text-sm text-gray-500">
-                <Link href={`/course/weeks?courseId=${courseId}`} className="hover:text-[#00A3B5] transition-colors">
-                  Back to Weeks
-                </Link>
-              </div>
+      {/* Course Info with Back Button */}
+      <div className="bg-white border-b mt-16 sticky top-16 z-10 shadow-sm">
+        <div className="w-full px-4 py-4 flex items-center">
+          <button
+            onClick={handleGoBack}
+            className="flex items-center justify-center h-8 w-8 rounded-full bg-[#00A3B5]/10 text-[#00A3B5] hover:bg-[#00A3B5]/20 transition-colors mr-3"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+          <div className="flex-1">
+            <div className="flex items-center text-sm text-gray-500 mb-1">
+              <BookOpen className="h-4 w-4 mr-1" />
+              <span>
+                {courseId.toUpperCase()} • Week {weekId}
+              </span>
+            </div>
+            <h1 className="text-2xl font-bold text-gray-800">Week {weekId}</h1>
+          </div>
+          <div className="hidden md:block">
+            <div className="bg-[#F8FAFC] rounded-full h-8 w-32 flex items-center">
+              <div
+                className="bg-gradient-to-r from-[#00A3B5] to-[#68D391] h-8 rounded-full"
+                style={{ width: `${progress}%` }}
+              ></div>
+              <span className="absolute text-xs font-medium ml-3">{progress}% Complete</span>
             </div>
           </div>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center text-gray-600">
-              <Clock className="h-4 w-4 mr-1" />
-              <span className="text-sm">5 hours</span>
-            </div>
-            <div className="flex items-center text-green-600">
-              <CheckCircle className="h-4 w-4 mr-1" />
-              <span className="text-sm">In Progress</span>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Course Info */}
-      <div className="bg-white border-b mt-5">
-        <div className="max-w-screen-xl mx-auto px-4 py-4">
-          <div className="flex items-center text-sm text-gray-500 mb-1">
-            <BookOpen className="h-4 w-4 mr-1" />
-            <span>
-              {courseId.toUpperCase()} • Week {weekId}
-            </span>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-800">Week {weekId}</h1>
         </div>
       </div>
 
-      <div className="flex  w-full">
+      <div className="flex mx-auto w-full h-[calc(100vh-8rem)] mb-16">
         {/* Sidebar */}
-        <aside className="w-72 bg-white border-r hidden md:block">
-          <div className="p-4 border-b">
-            <h2 className="font-medium text-gray-800">Lessons</h2>
+        <aside className="w-72 bg-white border-r border-gray-200 hidden md:block shadow-sm h-full">
+          <div className="p-4 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-800">Lessons</h2>
           </div>
           <div className="overflow-auto h-[calc(100vh-12rem)]">
-            <ul>
+            <ul className="space-y-1">
               {lessons.map((lesson) => (
                 <li key={lesson._id || lesson.lessonId}>
                   <button
                     onClick={() => handleLessonClick(lesson.lessonId)}
-                    className={`w-full text-left px-4 py-3 flex items-center border-l-4 hover:bg-gray-50 transition-colors ${
-                      activeLesson === lesson.lessonId ? "border-[#00A3B5] bg-[#E6F7F9]" : "border-transparent"
+                    className={`w-full text-left px-4 py-3 flex items-center rounded-xl transition-all ${
+                      activeLesson === lesson.lessonId
+                        ? "bg-gradient-to-r from-[#00A3B5]/10 to-[#68D391]/10 border border-[#00A3B5]/20 text-[#00A3B5]"
+                        : "hover:bg-gray-50"
                     }`}
                   >
                     <div className="flex-1 min-w-0">
-                      <p
-                        className={`font-medium truncate ${
-                          activeLesson === lesson.lessonId ? "text-[#00A3B5]" : "text-gray-700"
-                        }`}
-                      >
-                        {lesson.title || lesson.name || "Untitled Lesson"}
-                      </p>
-                      <div className="flex items-center mt-1 text-xs text-gray-500">
-                        <Clock className="h-3 w-3 mr-1" />
+                      <div className="flex items-center gap-2">
+                        <p
+                          className={`text-sm ${
+                            activeLesson === lesson.lessonId ? "text-gray-900 font-medium" : "text-gray-700"
+                          }`}
+                        >
+                          {lesson.title || lesson.name || "Untitled Lesson"}
+                        </p>
+                      </div>
+                      <div className="mt-1 text-xs text-gray-500">
                         <span>{lesson.duration || "25 min"}</span>
                       </div>
                     </div>
-                    {activeLesson === lesson.lessonId && <Play className="h-4 w-4 text-[#00A3B5] ml-2 flex-shrink-0" />}
+                    {activeLesson === lesson.lessonId && <Play className="h-4 w-4 text-gray-600 ml-2 flex-shrink-0" />}
                   </button>
                 </li>
               ))}
@@ -282,62 +275,39 @@ export default function WeekPage() {
         </aside>
 
         {/* Main Content */}
-        <main ref={contentRef} className="flex-1 overflow-auto bg-white">
+        <main ref={contentRef} className="flex-1 overflow-auto bg-[#F8FAFC] h-full">
           {currentLesson ? (
             <div className="h-full flex flex-col">
-              <div className="p-6 flex-1">
-                <div className="mb-4">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                    {currentLesson.title || currentLesson.name || "Untitled Lesson"}
-                  </h2>
-                  <div className="flex items-center text-gray-500">
-                    <Clock className="h-4 w-4 mr-1" />
-                    <span className="text-sm">25 min read</span>
-                  </div>
-                </div>
-
-                {/* Lesson Content */}
-                <div className="prose max-w-none">
-                  {currentLesson.content ? (
-                    <div dangerouslySetInnerHTML={{ __html: currentLesson.content }} />
-                  ) : (
-                    <div>
-                      <p>jbjejkrngj</p>
-                      <p>njnjgvnjegrn</p>
-                      <p>kvnrjbvjernjvnejnvenkvernr;eg;bb</p>
-                      <p>reberbnrknb</p>
-
-                      <table className="min-w-full border-collapse mt-6 mb-6">
-                        <thead>
-                          <tr className="bg-gray-100">
-                            <th className="border border-gray-300 px-4 py-2 text-left">hefhrbj</th>
-                            <th className="border border-gray-300 px-4 py-2 text-left">njvjbnj</th>
-                            <th className="border border-gray-300 px-4 py-2 text-left">fbejbj</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td className="border border-gray-300 px-4 py-2">benfjenjfn</td>
-                            <td className="border border-gray-300 px-4 py-2">nejnjenrk</td>
-                            <td className="border border-gray-300 px-4 py-2">bndwebfjnwj</td>
-                          </tr>
-                          <tr>
-                            <td className="border border-gray-300 px-4 py-2">njenfkenk</td>
-                            <td className="border border-gray-300 px-4 py-2">nkenk</td>
-                            <td className="border border-gray-300 px-4 py-2">fcjnwjk</td>
-                          </tr>
-                        </tbody>
-                      </table>
-
-                      <p>jner;jgne1jg</p>
-                      <p>kfnkre</p>
+              <div className="flex-1 w-full">
+                <div className="bg-white w-full h-full overflow-auto">
+                  <div className="p-4 md:p-6">
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                      {currentLesson.title || currentLesson.name || "Untitled Lesson"}
+                    </h2>
+                    <div className="flex items-center text-gray-500">
+                      <Clock className="h-4 w-4 mr-1" />
+                      <span className="text-sm">25 min read</span>
                     </div>
-                  )}
+                  </div>
+
+                  {/* Lesson Content */}
+                  <div className="prose max-w-none p-4 md:p-6 pt-0 lesson-content">
+                    {currentLesson.content ? (
+                      <div
+                        dangerouslySetInnerHTML={{ __html: currentLesson.content }}
+                        className="tiptap-content custom-lesson-content"
+                      />
+                    ) : (
+                      <div className="custom-lesson-content">
+                        <p className="para-t">No content available</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
               {/* Lesson Navigation */}
-              <div className="border-t p-4 flex justify-between items-center mt-auto">
+              <div className="bg-white border-t p-4 flex justify-between items-center fixed bottom-0 left-0 right-0 shadow-md z-10 w-full">
                 <button
                   onClick={handlePreviousLesson}
                   disabled={getCurrentLessonIndex() === 0}
@@ -388,7 +358,7 @@ export default function WeekPage() {
       </div>
 
       {/* Mobile Lesson Navigation */}
-      <div className="md:hidden bg-white border-t p-4 sticky bottom-0">
+      <div className="md:hidden bg-white border-t p-4 fixed bottom-0 left-0 right-0 shadow-lg z-20">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-medium text-gray-800">Lessons</h3>
           <span className="text-sm text-gray-500">
