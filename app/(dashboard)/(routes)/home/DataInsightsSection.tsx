@@ -53,48 +53,56 @@ const DataInsightsSection = () => {
   const COLORS = ["#00A3B5", "#0F172A", "#10B981", "#68D391"]
 
   return (
-    <div className="w-full bg-white py-20">
+    <div className="w-full bg-white py-8 sm:py-12 md:py-16 lg:py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-16 text-center"
+          className="mb-6 sm:mb-8 md:mb-12 lg:mb-16 text-center"
         >
-          <h2 className="mb-4 text-3xl font-bold text-[#28282B] md:text-4xl">Data Analysis Career Insights</h2>
-          <p className="mx-auto max-w-3xl text-lg text-gray-600">
+          <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#28282B]">
+            Data Analysis Career Insights
+          </h2>
+          <p className="mx-auto max-w-3xl text-base sm:text-lg md:text-xl text-gray-600 px-4">
             Explore the growing demand, competitive salaries, and essential skills in the data analysis field
           </p>
         </motion.div>
 
-        <div className="flex flex-col items-center gap-12 lg:flex-row">
+        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12">
           {/* Chart Section */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="h-[450px] w-full rounded-xl bg-white p-6 shadow-xl lg:w-2/3"
+            className="w-full lg:w-2/3 h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] rounded-xl bg-white p-4 sm:p-6 shadow-xl"
           >
             {/* Tabs */}
-            <div className="mb-6 flex border-b">
+            <div className="mb-4 sm:mb-6 flex border-b overflow-x-auto scrollbar-hide">
               <button
-                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeTab === "salary" ? "border-b-2 border-[#00A3B5] text-[#00A3B5]" : "text-gray-500"}`}
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap ${
+                  activeTab === "salary" ? "border-b-2 border-[#00A3B5] text-[#00A3B5]" : "text-gray-500"
+                }`}
                 onClick={() => setActiveTab("salary")}
               >
                 <BarChart2 className="h-4 w-4" />
                 <span>Salary Potential</span>
               </button>
               <button
-                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeTab === "demand" ? "border-b-2 border-[#00A3B5] text-[#00A3B5]" : "text-gray-500"}`}
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap ${
+                  activeTab === "demand" ? "border-b-2 border-[#00A3B5] text-[#00A3B5]" : "text-gray-500"
+                }`}
                 onClick={() => setActiveTab("demand")}
               >
                 <TrendingUp className="h-4 w-4" />
                 <span>Job Demand</span>
               </button>
               <button
-                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${activeTab === "skills" ? "border-b-2 border-[#00A3B5] text-[#00A3B5]" : "text-gray-500"}`}
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap ${
+                  activeTab === "skills" ? "border-b-2 border-[#00A3B5] text-[#00A3B5]" : "text-gray-500"
+                }`}
                 onClick={() => setActiveTab("skills")}
               >
                 <PieChartIcon className="h-4 w-4" />
@@ -103,16 +111,27 @@ const DataInsightsSection = () => {
             </div>
 
             {/* Chart Content */}
-            <div className="h-[350px]">
+            <div className="h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px]">
               {activeTab === "salary" && (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={salaryData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                    <XAxis dataKey="role" tick={{ fill: "#4B5563" }} />
-                    <YAxis tick={{ fill: "#4B5563" }} />
+                    <XAxis
+                      dataKey="role"
+                      tick={{ fill: "#4B5563", fontSize: 10 }}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                    />
+                    <YAxis tick={{ fill: "#4B5563", fontSize: 12 }} />
                     <Tooltip
                       formatter={(value) => [`$${value.toLocaleString()}`, "Average Salary"]}
-                      contentStyle={{ backgroundColor: "#fff", borderRadius: "8px", border: "1px solid #e2e8f0" }}
+                      contentStyle={{
+                        backgroundColor: "#fff",
+                        borderRadius: "8px",
+                        border: "1px solid #e2e8f0",
+                        fontSize: "12px",
+                      }}
                     />
                     <Bar dataKey="salary" fill="#00A3B5" radius={[4, 4, 0, 0]} />
                   </BarChart>
@@ -123,11 +142,16 @@ const DataInsightsSection = () => {
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={demandData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                    <XAxis dataKey="year" tick={{ fill: "#4B5563" }} />
-                    <YAxis tick={{ fill: "#4B5563" }} />
+                    <XAxis dataKey="year" tick={{ fill: "#4B5563", fontSize: 12 }} />
+                    <YAxis tick={{ fill: "#4B5563", fontSize: 12 }} />
                     <Tooltip
                       formatter={(value, name) => [value, "Demand Index"]}
-                      contentStyle={{ backgroundColor: "#fff", borderRadius: "8px", border: "1px solid #e2e8f0" }}
+                      contentStyle={{
+                        backgroundColor: "#fff",
+                        borderRadius: "8px",
+                        border: "1px solid #e2e8f0",
+                        fontSize: "12px",
+                      }}
                       labelFormatter={(label) => `Year: ${label}`}
                     />
                     <Legend />
@@ -136,8 +160,8 @@ const DataInsightsSection = () => {
                       dataKey="demand"
                       stroke="#00A3B5"
                       strokeWidth={3}
-                      dot={{ r: 6, fill: "#00A3B5", strokeWidth: 2, stroke: "#fff" }}
-                      activeDot={{ r: 8, fill: "#00A3B5", strokeWidth: 2, stroke: "#fff" }}
+                      dot={{ r: 4, fill: "#00A3B5" }}
+                      activeDot={{ r: 6, fill: "#00A3B5", strokeWidth: 2, stroke: "#fff" }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -151,7 +175,7 @@ const DataInsightsSection = () => {
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      outerRadius={130}
+                      outerRadius={100}
                       fill="#8884d8"
                       dataKey="value"
                       label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
@@ -162,7 +186,12 @@ const DataInsightsSection = () => {
                     </Pie>
                     <Tooltip
                       formatter={(value) => [`${value}%`, "Demand"]}
-                      contentStyle={{ backgroundColor: "#fff", borderRadius: "8px", border: "1px solid #e2e8f0" }}
+                      contentStyle={{
+                        backgroundColor: "#fff",
+                        borderRadius: "8px",
+                        border: "1px solid #e2e8f0",
+                        fontSize: "12px",
+                      }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -178,7 +207,9 @@ const DataInsightsSection = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="w-full lg:w-1/3"
           >
-            <h3 className="mb-6 text-2xl font-bold text-[#28282B]">Why Data Analysis is the Career of the Future</h3>
+            <h3 className="mb-6 text-2xl sm:text-3xl lg:text-4xl font-bold text-[#28282B]">
+              Why Data Analysis is the Career of the Future
+            </h3>
 
             <div className="space-y-6 text-gray-600">
               <p className="text-lg">
@@ -220,7 +251,7 @@ const DataInsightsSection = () => {
                 this competitive field.
               </p>
 
-              <button className="group mt-6 flex items-center gap-2 rounded-lg bg-[#00A3B5] px-8 py-4 font-medium text-white transition-all duration-300 hover:bg-[#0F172A]">
+              <button className="group mt-6 flex items-center gap-2 rounded-lg bg-[#00A3B5] px-8 py-4 font-medium text-white transition-all duration-300 hover:bg-[#0F172A] w-full sm:w-auto">
                 <span>Start Your Data Career</span>
                 <ArrowRight className="h-5 w-5 transform transition-transform duration-300 group-hover:translate-x-1" />
               </button>
@@ -228,6 +259,18 @@ const DataInsightsSection = () => {
           </motion.div>
         </div>
       </div>
+
+      {/* Custom Styles */}
+      <style jsx>{`
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </div>
   )
 }

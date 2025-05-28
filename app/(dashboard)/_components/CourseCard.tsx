@@ -85,7 +85,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses = [] }) => {
             <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
               <div className="text-[#0F172A] font-bold">{course.price ? `$${course.price.toFixed(2)}` : "Free"}</div>
 
-              <Link href={`/course/weeks?courseId=${course.courseId}`}>
+              <Link href={`/course/weeks/1?courseId=${course.courseId}`}>
                 <button className="flex items-center bg-[#0293A6] hover:bg-[#026d7d] text-white px-4 py-2 rounded-lg transition-colors">
                   <span>Start Learning</span>
                   <ChevronRight className="h-4 w-4 ml-1" />
@@ -100,3 +100,4 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses = [] }) => {
 }
 
 export default CourseCard
+

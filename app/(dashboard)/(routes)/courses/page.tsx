@@ -101,7 +101,7 @@ const CoursesPage = () => {
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="bg-[#0293A6] text-white px-4 py-2 rounded-lg hover:bg-[#026d7d] transition-colors"
+            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
           >
             Try Again
           </button>
@@ -154,10 +154,10 @@ const CoursesPage = () => {
         </div>
 
         <div className="max-w-7xl mx-auto relative z-10">
-          <h1 className="text-4xl font-bold mb-4">Data Analytics Courses</h1>
+          <h1 className="text-4xl font-bold mb-4">Web Development Courses</h1>
           <p className="text-xl text-white/80 max-w-3xl mb-8">
-            Master the skills that drive business decisions. Our data analytics courses are designed by industry experts
-            to help you excel in today's data-driven world.
+            Master the skills that drive modern web development. Our courses are designed by industry experts to help
+            you excel in today's tech-driven world.
           </p>
 
           <div className="flex flex-wrap gap-6 mt-8">
@@ -231,30 +231,28 @@ const CoursesPage = () => {
           {/* Quick filters */}
           <div className="mt-4 flex flex-wrap gap-2">
             <button
-              onClick={() => setSelectedTag("SQL")}
+              onClick={() => setSelectedTag("HTML")}
               className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
-                selectedTag === "SQL" ? "bg-[#0293A6] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                selectedTag === "HTML" ? "bg-[#0293A6] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
-              SQL
+              HTML
             </button>
             <button
-              onClick={() => setSelectedTag("Python")}
+              onClick={() => setSelectedTag("CSS")}
               className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
-                selectedTag === "Python" ? "bg-[#0293A6] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                selectedTag === "CSS" ? "bg-[#0293A6] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
-              Python
+              CSS
             </button>
             <button
-              onClick={() => setSelectedTag("Visualization")}
+              onClick={() => setSelectedTag("JavaScript")}
               className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
-                selectedTag === "Visualization"
-                  ? "bg-[#0293A6] text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                selectedTag === "JavaScript" ? "bg-[#0293A6] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
-              Data Visualization
+              JavaScript
             </button>
             <button
               onClick={() => setSelectedTag("Beginner")}
@@ -274,25 +272,25 @@ const CoursesPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               {
-                title: "SQL Fundamentals",
+                title: "HTML & CSS",
                 icon: Database,
                 count: 3,
                 color: "bg-[#0293A6]/10 text-[#0293A6]",
               },
               {
-                title: "Data Visualization",
+                title: "JavaScript",
                 icon: BarChart2,
                 count: 4,
                 color: "bg-[#68D391]/10 text-[#68D391]",
               },
               {
-                title: "Python for Data",
+                title: "React & Frameworks",
                 icon: BookOpen,
                 count: 5,
                 color: "bg-[#0293A6]/10 text-[#0293A6]",
               },
               {
-                title: "Business Analytics",
+                title: "Backend Development",
                 icon: BarChart2,
                 count: 3,
                 color: "bg-[#68D391]/10 text-[#68D391]",
