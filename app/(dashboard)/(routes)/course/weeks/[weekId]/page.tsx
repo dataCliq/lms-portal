@@ -841,9 +841,6 @@ export default function WeekPage() {
                         <h1 className="text-3xl font-bold text-gray-900 mb-4">
                           {currentLesson.title || currentLesson.name || "HTML Fundamentals"}
                         </h1>
-                        <p className="text-gray-600">
-                          Learn the building blocks of web development with HTML (Hypertext Markup Language).
-                        </p>
                       </div>
 
                       <div className="prose max-w-none">
